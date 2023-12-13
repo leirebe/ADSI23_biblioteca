@@ -18,12 +18,12 @@ cur.execute("""
 """)
 
 cur.execute("""
-	CREATE TABLE Book(
-		id integer primary key AUTOINCREMENT,
-		title varchar(50),
-		author integer,
-		cover varchar(50),
-		description TEXT,
+	CREATE TABLE Libro(
+		idLibro integer primary key AUTOINCREMENT,
+		titulo varchar(50),
+		autor integer,
+		genero varchar(50),
+		disponible boolean,
 		FOREIGN KEY(author) REFERENCES Author(id)
 	)
 """)
