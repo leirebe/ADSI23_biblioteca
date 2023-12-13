@@ -42,10 +42,15 @@ def catalogue():
 	return render_template('catalogue.html', books=books, title=title, author=author, current_page=page,
 	                       total_pages=total_pages, max=max, min=min)
 
+@app.route('/book')
+def book():
+	bookId = request.values.get("id", "")
+	book = library.getBook(bookId)
+	return render_template('book.html', book=book)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	if 'user' in dir(request) and request.user and request.user.token:
+	if 'user' in dir(request) and request.user and request.user.token: #esta linea indica que el user ha iniciado sesion
 		return redirect('/')
 	email = request.values.get("email", "")
 	password = request.values.get("password", "")

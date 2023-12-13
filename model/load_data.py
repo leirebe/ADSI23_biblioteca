@@ -21,19 +21,93 @@ cur.execute("""
 	CREATE TABLE Libro(
 		idLibro integer primary key AUTOINCREMENT,
 		titulo varchar(50),
-		autor integer,
+		autor varchar(40),
 		genero varchar(50),
 		disponible boolean,
-		FOREIGN KEY(author) REFERENCES Author(id)
+		fechaHora date,
+		FOREIGN KEY(autor) REFERENCES Author(id)
 	)
 """)
 
 cur.execute("""
 	CREATE TABLE User(
-		id integer primary key AUTOINCREMENT,
-		name varchar(20),
+		idU integer primary key AUTOINCREMENT,
+		nombre varchar(20),
+		rol integer(1)
 		email varchar(30),
 		password varchar(32)
+	)
+""")
+
+cur.execute("""
+	CREATE TABLE Tema(
+		idTema integer primary key AUTOINCREMENT
+	)
+""")
+
+cur.execute("""
+	CREATE TABLE Origen(
+		temaIdTema integer(20),
+		mensajeIdM integer(10),
+		FOREIGN KEY(temaIdTema) REFERENCES Mensaje(temaIdTema),
+		FOREIGN KEY(mensajeIdM) REFERENCES Mensaje(idM)
+	)
+""")
+
+cur.execute("""
+	CREATE TABLE Mensaje(
+		idM integer primary key AUTOINCREMENT,
+		usuarioIdU integer(20)
+		temaIdTema integer(20),
+		receptor integer(20),
+		texto varchar(255),
+		FechaHora data,
+		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
+		FOREIGN KEY(TemaIdTema) REFERENCES Tema(idTema)
+	)
+""")
+
+cur.execute("""
+	CREATE TABLE Solicitud(
+		usuarioIdU integer(10),
+		usuarioIdU2 integer(10)
+		aceptada boolean,
+		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
+		FOREIGN KEY(usuarioIdU2) REFERENCES Usuario(idU)
+	)
+""")
+
+cur.execute("""
+	CREATE TABLE Recomendacion(
+		usuarioIdU integer(10),
+		libroIdLibro integer(10)
+		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
+		FOREIGN KEY(libroIdLibro) REFERENCES LIbro(idLibro)
+	)
+""")
+
+cur.execute("""
+	CREATE TABLE Reserva(
+		usuarioIdU integer(10),
+		copiaLibroIdCopia integer(10),
+		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
+		FOREIGN KEY(libroIdLibro) REFERENCES CopiaLibro(idCopia)
+	)
+""")
+
+cur.execute("""
+	CREATE TABLE Resenna(
+		usuarioIdU integer(10),
+		libroIdLibro integer(10),
+		texto varchar(255),
+		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
+		FOREIGN KEY(libroIdLibro) REFERENCES Libro(idLibro)
+	)
+""")
+
+cur.execute("""
+	CREATE TABLE CopiaLibro( 
+		idCopia integer primary key AUTOINCREMENT
 	)
 """)
 
