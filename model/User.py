@@ -17,6 +17,10 @@ class User:
 		self.id = id
 		self.username = username
 		self.email = email
+		self.listaReservas = []
+
+	def agregarReserva(self, Reserva): #NO sabemos si es necesaria esta función
+		self.listaReservas.append(Reserva)
 
 	def __str__(self):
 		return f"{self.username} ({self.email})"

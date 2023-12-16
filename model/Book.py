@@ -10,6 +10,9 @@ class Book:
 		self.author = author
 		self.cover = cover
 		self.description = description
+		self.disponible = True
+		self.puntuacion = 0.0
+		self.listaResennas = []
 
 	@property
 	def author(self):
@@ -17,6 +20,8 @@ class Book:
 			em = db.select("SELECT * from Author WHERE id=?", (self._author,))[0]
 			self._author = Author(em[0], em[1])
 		return self._author
+	def agregarResennas(Resenna, self): #NO sabemos si es necesaria esta función
+		self.listaResennas.append(Resenna)
 
 	@author.setter
 	def author(self, value):
