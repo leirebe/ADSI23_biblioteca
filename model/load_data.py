@@ -107,7 +107,8 @@ cur.execute("""
 
 cur.execute("""
 	CREATE TABLE CopiaLibro( 
-		idCopia integer primary key AUTOINCREMENT
+		idCopia integer primary key AUTOINCREMENT,
+		LibroidLibro integer
 	)
 """)
 

@@ -48,6 +48,7 @@ def book():
 	book = library.getBook(bookId)
 	return render_template('book.html', book=book)
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if 'user' in dir(request) and request.user and request.user.token: #esta linea indica que el user ha iniciado sesion

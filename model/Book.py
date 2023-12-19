@@ -1,11 +1,13 @@
+from . import BookCopy
 from .Connection import Connection
 from .Author import Author
 
 db = Connection()
 
+
 class Book:
-	def __init__(self, id, title, author, cover, description):
-		self.id = id
+	def __init__(self, idLibro, title, author, cover, description):
+		self.idLibro = idLibro
 		self.title = title
 		self.author = author
 		self.cover = cover
@@ -13,6 +15,7 @@ class Book:
 		self.disponible = True
 		self.puntuacion = 0.0
 		self.listaResennas = []
+		self.copies = BookCopy.generate_copies(self)
 
 	@property
 	def author(self):
@@ -27,5 +30,10 @@ class Book:
 	def author(self, value):
 		self._author = value
 
+	def copias_disp(self):
+		copiasDisp = [copy.idCopia for copy in self.copies if copy.available]
+		return len(copiasDisp), copiasDisp
+
 	def __str__(self):
 		return f"{self.title} ({self.author})"
+
