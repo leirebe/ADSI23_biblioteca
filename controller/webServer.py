@@ -1,5 +1,6 @@
 from .LibraryController import LibraryController
 from flask import Flask, render_template, request, make_response, redirect
+from datetime import datetime
 
 app = Flask(__name__, static_url_path='', static_folder='../view/static', template_folder='../view/')
 
@@ -49,10 +50,30 @@ def book():
 	print(f"bookId recibido: {bookId}")
 	book = library.getBook(bookId)
 	if book:
-		return render_template('book.html', book=book)
+		resennas = book.getResennas()
+		return render_template('book.html', book=book, resennas=resennas)
 	else:
 		print("Libro no encontrado")
 		return render_template('book_not_found.html')
+@app.route('/perfil')
+def perfil():
+	userId = request.values.get("id", -1)
+	if userId==-1:
+		user = request.user
+	else:
+		user = library.get_user_id(userId)
+
+	return render_template('perfil.html',user=user)
+
+
+@app.route('/reserve')
+def reserve_book():
+	user_id = request.user.id if 'user' in dir(request) and request.user else None
+	bookId = request.values.get("id", "")
+	copyId = request.values.get("copyId", "")
+	reservation_time = get_current_time()
+	res = library.reserve_copy(user_id, bookId, copyId, reservation_time)
+	return render_template('reserva.html', result=res)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -86,3 +107,7 @@ def logout():
 		request.user = None
 	return resp
 
+
+def get_current_time():
+	current_time = datetime.now()
+	return current_time.strftime("%Y-%m-%d %H:%M")

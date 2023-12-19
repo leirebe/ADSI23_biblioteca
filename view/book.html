@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ book.title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-<body>
+{% extends 'base.html' %}
 
-<div class="container">
+{% block content %}
+
+<div class="container p-5 my-5 border">
     <h1>{{ book.title }}</h1>
     <p>Autor: {{ book.author.name if book.author else 'Sin autor' }}</p>
-    
+
     {% if book.cover %}
         <img src="{{ book.cover }}" alt="Portada del Libro" style="max-width: 300px; height: auto;">
     {% endif %}
@@ -23,22 +17,32 @@
     {% endif %}
 
     {% set availableCopies = book.availableCopies() %}
+    <p>Copias disponibles: {{ availableCopies.0 }}</p>
+
     {% if availableCopies.0 > 0 %}
         <p><button id="reservarBtn" onclick="reservarLibro()">Reservar Libro</button></p>
     {% else %}
         <p><button id="reservarBtnDisabled" disabled>No hay copias disponibles</button></p>
     {% endif %}
 
+    <h3>Reseñas:</h3>
+    {% for resenna in resennas %}
+        <hr>
+        <div>
+            <p>{{resenna.comment}}</p>
+            <p>Puntuación: {{resenna.puntuacion}}</p>
+            <span>User: {{resenna.Usuario.username}}</span>
+        </div>
+
+    {% endfor %}
+
     <script>
-    function reservarLibro() {
-        console.log("Función reservarLibro llamada correctamente");
-        var copiasDisponibles = {{ availableCopies.0 }};
-        console.log("Copias disponibles:", copiasDisponibles);
-    }
+        function reservarLibro() {
+            console.log("Función reservarLibro llamada correctamente");
+            window.location.href = '/reserve'
+        }
     </script>
 
-    <a href="/catalogue">Volver al catálogo</a>
 </div>
 
-</body>
-</html>
+{% endblock %}

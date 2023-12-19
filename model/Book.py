@@ -1,6 +1,7 @@
 from .BookCopy import BookCopy
 from .Connection import Connection
 from .Author import Author
+from .Resenna import Resenna
 
 db = Connection()
 
@@ -12,9 +13,7 @@ class Book:
         self.author = author
         self.cover = cover
         self.description = description
-        self.disponible = True
         self.puntuacion = 0.0
-        self.listaResennas = []
         self.copies = BookCopy.generate_copies(book=self)
 
     @property
@@ -36,6 +35,16 @@ class Book:
         copiasDisp = [copy.idCopia for copy in self.copies if copy.available]
         print("Copias disponibles:", copiasDisp)
         return len(copiasDisp), copiasDisp
+
+    def actualizarDisponibilidad(self):
+        print("Total de copias:", len(self.copies)-1)
+        copiasDisp = [copy.idCopia for copy in self.copies if copy.available]
+        print("Copias disponibles:", copiasDisp)
+        return len(copiasDisp)-1, copiasDisp
+
+    def getResennas(self):
+        em=db.select("SELECT * FROM Resenna WHERE libroIdLibro=?",(self.idLibro,))
+        return [Resenna(r[0],self,r[2],r[3]) for r in em]
 
     def __str__(self):
         return f"{self.title} ({self.author})"
