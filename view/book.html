@@ -23,18 +23,20 @@
     {% endif %}
 
     {% set availableCopies = book.availableCopies() %}
+    <p>Copias disponibles: {{ availableCopies.0 }}</p>
+
     {% if availableCopies.0 > 0 %}
         <p><button id="reservarBtn" onclick="reservarLibro()">Reservar Libro</button></p>
+        </div>
     {% else %}
         <p><button id="reservarBtnDisabled" disabled>No hay copias disponibles</button></p>
     {% endif %}
 
     <script>
-    function reservarLibro() {
-        console.log("Función reservarLibro llamada correctamente");
-        var copiasDisponibles = {{ availableCopies.0 }};
-        console.log("Copias disponibles:", copiasDisponibles);
-    }
+        function reservarLibro() {
+            console.log("Función reservarLibro llamada correctamente");
+            window.location.href = '/reserve'
+        }
     </script>
 
     <a href="/catalogue">Volver al catálogo</a>

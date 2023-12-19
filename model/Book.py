@@ -12,7 +12,6 @@ class Book:
         self.author = author
         self.cover = cover
         self.description = description
-        self.disponible = True
         self.puntuacion = 0.0
         self.listaResennas = []
         self.copies = BookCopy.generate_copies(book=self)
@@ -37,5 +36,10 @@ class Book:
         print("Copias disponibles:", copiasDisp)
         return len(copiasDisp), copiasDisp
 
+    def actualizarDisponibilidad(self):
+        print("Total de copias:", len(self.copies)-1)
+        copiasDisp = [copy.idCopia for copy in self.copies if copy.available]
+        print("Copias disponibles:", copiasDisp)
+        return len(copiasDisp)-1, copiasDisp
     def __str__(self):
         return f"{self.title} ({self.author})"

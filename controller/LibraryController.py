@@ -1,4 +1,4 @@
-from model import Connection, Book, User
+from model import Connection, Book, User, Reserva
 from model.tools import hash_password
 
 db = Connection()
@@ -46,7 +46,18 @@ class LibraryController:
 		else:
 			return None
 
-
+	def reserve_copy(self, user_id, book_id, copy_id, reserve_time):
+		book = self.getBook(book_id) #es necesario??
+		copy = book.get_copy(copy_id)
+		if copy and copy.available:
+			copy.available = False
+			unique_id= Reserva.generate_unique_id()
+			reserva = Reserva(idReserva = unique_id, idUsuario=user_id, idCopiaLIbro=copy_id, devuelto=False,puntuacion=0, resenna="")
+			self.db.insert("INSERT INTO Reserva(idReserva, usuarioidU, copiaLibroidCopia, fechaReserva) VALUES (?, ?, ?, ?)",
+						   (unique_id, user_id, copy_id, reserve_time ))
+			return True
+		else:
+			return False
 	def get_user(self, email, password):
 		user = db.select("SELECT * from User WHERE email = ? AND password = ?", (email, hash_password(password)))
 		if len(user) > 0:

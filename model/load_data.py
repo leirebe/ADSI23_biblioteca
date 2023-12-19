@@ -61,7 +61,7 @@ cur.execute("""
 		temaIdTema integer(20),
 		receptor integer(20),
 		texto varchar(255),
-		FechaHora data,
+		FechaHora date,
 		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
 		FOREIGN KEY(TemaIdTema) REFERENCES Tema(idTema)
 	)
@@ -108,7 +108,8 @@ cur.execute("""
 cur.execute("""
 	CREATE TABLE CopiaLibro( 
 		idCopia integer primary key AUTOINCREMENT,
-		LibroidLibro integer
+		LibroidLibro integer,
+		FechaHora date
 	)
 """)
 
