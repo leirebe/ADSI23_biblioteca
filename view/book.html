@@ -10,7 +10,7 @@
 
 <div class="container">
     <h1>{{ book.title }}</h1>
-    <p>Autor: {{ book.author.name }}</p>
+    <p>Autor: {{ book.author.name if book.author else 'Sin autor' }}</p>
     
     {% if book.cover %}
         <img src="{{ book.cover }}" alt="Portada del Libro" style="max-width: 300px; height: auto;">
@@ -22,7 +22,20 @@
         <p>No hay descripción disponible para este libro.</p>
     {% endif %}
 
-    <p><button id="reservarBtn">Reservar Libro</button></p>
+    {% set availableCopies = book.availableCopies() %}
+    {% if availableCopies.0 > 0 %}
+        <p><button id="reservarBtn" onclick="reservarLibro()">Reservar Libro</button></p>
+    {% else %}
+        <p><button id="reservarBtnDisabled" disabled>No hay copias disponibles</button></p>
+    {% endif %}
+
+    <script>
+    function reservarLibro() {
+        console.log("Función reservarLibro llamada correctamente");
+        var copiasDisponibles = {{ availableCopies.0 }};
+        console.log("Copias disponibles:", copiasDisponibles);
+    }
+    </script>
 
     <a href="/catalogue">Volver al catálogo</a>
 </div>

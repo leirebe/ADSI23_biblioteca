@@ -42,11 +42,17 @@ def catalogue():
 	return render_template('catalogue.html', books=books, title=title, author=author, current_page=page,
 	                       total_pages=total_pages, max=max, min=min)
 
+
 @app.route('/book')
 def book():
 	bookId = request.values.get("id", "")
+	print(f"bookId recibido: {bookId}")
 	book = library.getBook(bookId)
-	return render_template('book.html', book=book)
+	if book:
+		return render_template('book.html', book=book)
+	else:
+		print("Libro no encontrado")
+		return render_template('book_not_found.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -79,3 +85,4 @@ def logout():
 		request.user.delete_session(request.user.token)
 		request.user = None
 	return resp
+

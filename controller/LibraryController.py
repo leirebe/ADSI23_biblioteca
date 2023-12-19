@@ -39,7 +39,7 @@ class LibraryController:
 				SELECT b.* 
 				FROM Book b
 				WHERE b.id = ?
-		""", (id_,))
+			""", (id_,))
 		if len(res) == 1:
 			b = res[0]
 			return Book(b[0],b[1],b[2],b[3],b[4])
@@ -60,3 +60,4 @@ class LibraryController:
 			return User(user[0][0], user[0][1], user[0][2])
 		else:
 			return None
+
