@@ -8,8 +8,15 @@
 <div class="container p-5 my-5 border">
     <h3>Libros en Reserva:</h3>
 
-     <!-- ¿Enlace para devolver?
-    <a href="/formulario_resena/{{ libro.idLibro }}">Reseñar</a>-->
+   <ul>
+       {% for libro in libros %}
+            <li>{{ libro[0] }}
+                <form action="/devolver_libro/{{ libro[1] }}" method="post">
+                    <input type="submit" value="Devolver">
+                </form>
+            </li>
+       {% endfor %}
+   </ul>
 
 </div>
 

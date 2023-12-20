@@ -1,3 +1,5 @@
+import sqlite3
+
 from .BookCopy import BookCopy
 from .Connection import Connection
 from .Author import Author
@@ -30,6 +32,35 @@ class Book:
         nueva_resenna = Resenna(idUsuario, self.idLibro, comentario, puntuacion)
         db.execute("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, Puntuacion) VALUES (?, ?, ?, ?)",
                    (nueva_resenna.Usuario, nueva_resenna.Libro, nueva_resenna.comment, nueva_resenna.puntuacion))
+
+    def obtener_libros_en_reserva(id_usuario):
+        con = sqlite3.connect('datos.db')
+        cur = con.cursor()
+
+        cur.execute("""
+            SELECT Book.title 
+            FROM Book 
+            INNER JOIN Reserva ON Reserva.IdCopiaLibro = Book.id 
+            WHERE Reserva.UsuarioIdU = ?
+        """, (id_usuario,))
+
+        libros_en_reserva = cur.fetchall()
+        con.close()
+
+        return libros_en_reserva
+
+    def devolver_libro_reservado(id_reserva):
+        con = sqlite3.connect('datos.db')
+        cur = con.cursor()
+
+        cur.execute("""
+            UPDATE Reserva 
+            SET devuelto = 1 
+            WHERE IdReserva = ?
+        """, (id_reserva,))
+
+        con.commit()
+        con.close()
 
     @author.setter
     def author(self, value):
