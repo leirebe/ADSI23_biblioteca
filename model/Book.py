@@ -23,8 +23,6 @@ class Book:
         return self._author
 
 
-    def agregarResennas(Resenna, self):  # NO sabemos si es necesaria esta función
-        self.listaResennas.append(Resenna)
 
     def insertarResenna(self, idUsuario, comentario, puntuacion):
         nueva_resenna = Resenna(idUsuario, self.idLibro, comentario, puntuacion)
