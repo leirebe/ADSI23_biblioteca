@@ -35,6 +35,7 @@ def index():
 	sistema.generarListaRecomendaciones(1)
 	return render_template('index.html')
 
+
 @app.route('/catalogue')
 def catalogue():
 	title = request.values.get("title", "")

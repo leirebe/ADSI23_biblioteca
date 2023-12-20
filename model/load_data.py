@@ -15,6 +15,7 @@ con = sqlite3.connect(db_path)
 cur = con.cursor()
 
 ###Create tables
+
 cur.execute("""
 	CREATE TABLE Author(
 		id integer primary key AUTOINCREMENT,
@@ -28,9 +29,8 @@ cur.execute("""
 		Titulo varchar(50),
 		Autor varchar(40),
 		Cover varchar(50),
-		Descripcion TEXT,
-		FechaHora date,
-		Disponible boolean
+		Descripcion varchar(255),
+		FechaHora date
 	)
 """)
 
