@@ -16,7 +16,7 @@
         <p>No hay descripción disponible para este libro.</p>
     {% endif %}
 
-    {% set availableCopies = book.availableCopies() %}
+    {% set availableCopies = Library %}
     <p>Copias disponibles: {{ availableCopies.0 }}</p>
 
     {% if availableCopies.0 > 0 %}

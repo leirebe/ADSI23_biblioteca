@@ -13,6 +13,7 @@ class Book:
         self.cover = cover
         self.description = description
         self.puntuacion = 0.0
+        self.copies = self.getCopies()
 
     @property
     def author(self):
@@ -33,6 +34,14 @@ class Book:
     @author.setter
     def author(self, value):
         self._author = value
+
+    def getCopies(self):
+        em=db.select("SELECT * FROM Reserva WHERE libroIdLibro=?",(self.idLibro,))
+        return [BookCopy(copy[0], self) for copy in em]
+
+    def getNumCopies(self):
+        em=db.select("SELECT COUNT(*) FROM Reserva WHERE libroIdLibro=?",(self.idLibro,))
+        return em
 
     def getResennas(self):
         em=db.select("SELECT * FROM Resenna WHERE libroIdLibro=?",(self.idLibro,))

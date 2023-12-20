@@ -3,6 +3,7 @@ class BookCopy:
         self.idCopia = idCopia
         self.book = book
         #self.available =
+
     #@classmethod
     # def generate_copies(cls, book):
 
@@ -17,13 +18,6 @@ class BookCopy:
     #    copies = [cls(book, f"{book.idLibro}_copy_{i}") for i in range(1, total_copies + 1)]
 
     #    return copies
-
-    def isAvailable(self, idcopia):
-        pass
-
-    def reserve(self):
-        if self.available:
-            self.available = False
 
     def __str__(self):
         return f"{self.idCopia} ({self.book})"
