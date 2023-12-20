@@ -1,4 +1,5 @@
 import hashlib
+import random
 import sqlite3
 import json
 import os
@@ -14,12 +15,12 @@ cur = con.cursor()
 
 
 ### Create tables
-#cur.execute("""
-#	CREATE TABLE Author(
-#		id integer primary key AUTOINCREMENT,
-#		name varchar(40)
-#	)
-#""")
+cur.execute("""
+	CREATE TABLE Author(
+		id integer primary key AUTOINCREMENT,
+		name varchar(40)
+	)
+""")
 
 cur.execute("""
 	CREATE TABLE Libro(
@@ -29,7 +30,6 @@ cur.execute("""
 		Cover varchar(50),
 		Descripcion TEXT,
 		FechaHora date,
-		Disponible boolean,
 	)
 """)
 
@@ -96,10 +96,9 @@ cur.execute("""
 	CREATE TABLE Reserva(
 		IdReserva integer primary key AUTOINCREMENT,
 		UsuarioIdU integer(10),
-		CopiaLibroIdCopia integer(10),
-		Resenna varchar(255),
-		Devuelto boolean,
-		Puntuacion integer(10),
+		IdCopiaLibro integer(10),
+		FechaHoraInicio date, 
+		FechaEntrega date,
 		FOREIGN KEY(UsuarioIdU) REFERENCES Usuario(IdU),
 		FOREIGN KEY(CopiaLibroIdCopia) REFERENCES CopiaLibro(IdCopia)
 	)
@@ -121,7 +120,7 @@ cur.execute("""
 	CREATE TABLE CopiaLibro( 
 		IdCopia integer primary key AUTOINCREMENT,
 		LibroidLibro integer,
-		FechaHora date
+		FOREIGN KEY(LibroIdLibro) REFERENCES Libro(IdLibro)
 	)
 """)
 
@@ -147,7 +146,7 @@ for user in usuarios:
 	con.commit()
 
 
-#### Insert books
+#### Insert books con sus respectivas copias
 with open('libros.tsv', 'r', encoding='utf-8') as f:
 	libros = [x.split("\t") for x in f.readlines()]
 
@@ -155,7 +154,12 @@ for author, title, cover, description in libros[:100]:
 	now = datetime.now()
 	cur.execute("INSERT INTO Libro VALUES (?, ?, ?, ?, ?, true)",
 		            (title, author, cover, description.strip(), now))
-
+	libro_id= cur.lastrowid #id del último libro
+	random.seed(42)
+	random_range = int(hashlib.sha256(str(libro_id).encode()).hexdigest(), 16) % 5 + 1
+	total_copies = random.randint(1, random_range)
+	for _ in range(1, total_copies + 1):
+		cur.execute("INSERT INTO CopiaLibro (LibroIdLibro) VALUES (?)", (libro_id,))
 	con.commit()
 
 

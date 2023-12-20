@@ -47,17 +47,20 @@ class LibraryController:
 			return None
 
 	def reserve_copy(self, user_id, book_id, reserve_time):
-		book = self.getBook(book_id) #es necesario??si
+		book = self.getBook(book_id) #es necesario
 		unique_id= Reserva.generate_unique_id()
-		reserva = Reserva(idReserva = unique_id, idUsuario=user_id, devuelto=False,puntuacion=0, resenna="")
-		self.db.insert("INSERT INTO Reserva(idReserva, usuarioidU, fechaReserva) VALUES (?, ?, ?, ?)",
+		reserva = Reserva(idReserva=unique_id, idUsuario=user_id, idLibro=book_id, puntuacion=0, resenna="")
+		self.db.insert("INSERT INTO Reserva(idReserva, idUsuario, fechaReserva) VALUES (?, ?, ?, ?)",
 						   (unique_id, user_id, reserve_time ))
+
+
 	def get_user(self, email, password):
 		user = db.select("SELECT * from User WHERE email = ? AND password = ?", (email, hash_password(password)))
 		if len(user) > 0:
 			return User(user[0][0], user[0][1], user[0][2], user[0][3])
 		else:
 			return None
+
 
 	def get_user_cookies(self, token, time):
 		user = db.select("SELECT u.* from User u, Session s WHERE u.id = s.user_id AND s.last_login = ? AND s.session_hash = ?", (time, token))

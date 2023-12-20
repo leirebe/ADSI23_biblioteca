@@ -1,8 +1,10 @@
 class Reserva:
-    def __init__(self, idReserva, idUsuario, idCopiaLibro, devuelto, puntuacion, resenna):
-        self.idReserva = idReserva #es necesario??
+    def __init__(self, idReserva, idUsuario, idLibro, fechaHoraInicio, fechaEntrega, devuelto, puntuacion, resenna):
+        self.idReserva = idReserva #es necesario
         self.idUsuario = idUsuario
-        self.idCopiaLibro = idCopiaLibro
+        self.idLibro = idLibro
+        self.fechaHoraInicio = fechaHoraInicio
+        self.fechaEntrega = fechaEntrega
         self.devuelto = False
         self.puntuacion = 0
         self.resenna = ""
