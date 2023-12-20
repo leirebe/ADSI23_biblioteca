@@ -64,18 +64,6 @@ def perfil():
 		user = library.get_user_id(userId)
 
 	return render_template('perfil.html',user=user)
-
-
-@app.route('/reserve')
-def reserve_book():
-	user_id = request.user.id if 'user' in dir(request) and request.user else None
-	bookId = request.values.get("id", "")
-	copyId = request.values.get("copyId", "")
-	reservation_time = get_current_time()
-	res = library.reserve_copy(user_id, bookId, copyId, reservation_time)
-	return render_template('reserva.html', result=res)
-
-
 @app.route('/reserve')
 def reserve_book():
 	user_id = request.user.id if 'user' in dir(request) and request.user else None
