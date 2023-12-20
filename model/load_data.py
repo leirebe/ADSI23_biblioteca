@@ -2,6 +2,7 @@ import hashlib
 import sqlite3
 import json
 import os
+import datetime
 
 os.remove("datos.db")
 
@@ -13,104 +14,112 @@ cur = con.cursor()
 
 
 ### Create tables
+#cur.execute("""
+#	CREATE TABLE Author(
+#		id integer primary key AUTOINCREMENT,
+#		name varchar(40)
+#	)
+#""")
+
 cur.execute("""
-	CREATE TABLE Author(
-		id integer primary key AUTOINCREMENT,
-		name varchar(40)
+	CREATE TABLE Libro(
+		idLibro integer primary key AUTOINCREMENT,
+		Titulo varchar(50),
+		Autor varchar(40),
+		Cover varchar(50),
+		Descripcion TEXT,
+		FechaHora date,
+		Disponible boolean,
 	)
 """)
 
 cur.execute("""
-	CREATE TABLE Book(
-		id integer primary key AUTOINCREMENT,
-		title varchar(50),
-		author varchar(40),
-		cover varchar(50),
-		description TEXT,
-		FOREIGN KEY(author) REFERENCES Author(id)
-	)
-""")
-
-cur.execute("""
-	CREATE TABLE User(
-		id integer primary key AUTOINCREMENT,
-		nombre varchar(20),
-		rol integer(1),
-		email varchar(30),
-		password varchar(32)
+	CREATE TABLE Usuario(
+		IdU integer primary key AUTOINCREMENT,
+		Nombre varchar(255),
+		Rol integer(10),
+		Email varchar(30),
+		Password varchar(32)
 	)
 """)
 
 cur.execute("""
 	CREATE TABLE Tema(
-		idTema integer primary key AUTOINCREMENT
+		IdTema integer primary key AUTOINCREMENT
 	)
 """)
 
 cur.execute("""
 	CREATE TABLE Origen(
-		temaIdTema integer(20),
-		mensajeIdM integer(10),
-		FOREIGN KEY(temaIdTema) REFERENCES Mensaje(temaIdTema),
-		FOREIGN KEY(mensajeIdM) REFERENCES Mensaje(idM)
+		TemaIdTema integer(10),
+		MensajeIdM integer(10),
+		MensajeUsuarioIdU integer(10),
+		MensajeTemaIdTema integer(10),
+		FOREIGN KEY(TemaIdTema) REFERENCES Mensaje(TemaIdTema),
+		FOREIGN KEY(TensajeIdM) REFERENCES Mensaje(IdM)
 	)
 """)
 
 cur.execute("""
 	CREATE TABLE Mensaje(
-		idM integer primary key AUTOINCREMENT,
-		usuarioIdU integer(20),
-		temaIdTema integer(20),
-		receptor integer(20),
-		texto varchar(255),
+		IdM integer primary key AUTOINCREMENT,
+		UsuarioIdU integer(20),
+		TemaIdTema integer(20),
+		Receptor integer(20),
+		Mensaje varchar(255),
 		FechaHora date,
-		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
-		FOREIGN KEY(TemaIdTema) REFERENCES Tema(idTema)
+		FOREIGN KEY(UsuarioIdU) REFERENCES Usuario(IdU),
+		FOREIGN KEY(TemaIdTema) REFERENCES Tema(IdTema)
 	)
 """)
 
 cur.execute("""
 	CREATE TABLE Solicitud(
-		usuarioIdU integer(10),
-		usuarioIdU2 integer(10),
-		aceptada boolean,
-		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
-		FOREIGN KEY(usuarioIdU2) REFERENCES Usuario(idU)
+		UsuarioIdU integer(10),
+		UsuarioIdU2 integer(10),
+		Aceptada boolean,
+		FOREIGN KEY(UsuarioIdU) REFERENCES Usuario(IdU),
+		FOREIGN KEY(UsuarioIdU2) REFERENCES Usuario(IdU)
 	)
 """)
 
 cur.execute("""
 	CREATE TABLE Recomendacion(
-		usuarioIdU integer(10),
-		libroIdLibro integer(10),
-		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
-		FOREIGN KEY(libroIdLibro) REFERENCES LIbro(idLibro)
+		UsuarioIdU integer(10),
+		LibroIdLibro integer(10),
+		FOREIGN KEY(UsuarioIdU) REFERENCES Usuario(IdU),
+		FOREIGN KEY(LibroIdLibro) REFERENCES LIbro(IdLibro)
 	)
 """)
 
 cur.execute("""
 	CREATE TABLE Reserva(
-		usuarioIdU integer(10),
-		copiaLibroIdCopia integer(10),
-		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
-		FOREIGN KEY(copiaLibroIdCopia) REFERENCES CopiaLibro(idCopia)
+		IdReserva integer primary key AUTOINCREMENT,
+		UsuarioIdU integer(10),
+		CopiaLibroIdCopia integer(10),
+		Resenna varchar(255),
+		Devuelto boolean,
+		Puntuacion integer(10),
+		FOREIGN KEY(UsuarioIdU) REFERENCES Usuario(IdU),
+		FOREIGN KEY(CopiaLibroIdCopia) REFERENCES CopiaLibro(IdCopia)
 	)
 """)
 
 cur.execute("""
 	CREATE TABLE Resenna(
-		usuarioIdU integer(10),
-		libroIdLibro integer(10),
-		texto varchar(255),
-		puntuacion integer,
-		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
-		FOREIGN KEY(libroIdLibro) REFERENCES Libro(idLibro)
+		IdResenna integer primary key AUTOINCREMENT,
+		UsuarioIdU integer(10),
+		LibroIdLibro integer(10),
+		Comentario varchar(255),
+		puntuacion integer(10),
+		FOREIGN KEY(UsuarioIdU) REFERENCES Usuario(IdU),
+		FOREIGN KEY(IibroIdLibro) REFERENCES Libro(IdLibro)
 	)
 """)
 
 cur.execute("""
 	CREATE TABLE CopiaLibro( 
-		idCopia integer primary key AUTOINCREMENT,
+		IdCopia integer primary key AUTOINCREMENT,
 		LibroidLibro integer,
 		FechaHora date
 	)
@@ -121,7 +130,7 @@ cur.execute("""
 		session_hash varchar(32) primary key,
 		user_id integer,
 		last_login float,
-		FOREIGN KEY(user_id) REFERENCES User(id)
+		FOREIGN KEY(user_id) REFERENCES Usuario(IdU)
 	)
 """)
 
@@ -134,7 +143,7 @@ for user in usuarios:
 	dataBase_password = user['password'] + salt
 	hashed = hashlib.md5(dataBase_password.encode())
 	dataBase_password = hashed.hexdigest()
-	cur.execute(f"""INSERT INTO User VALUES (NULL, '{user['nombres']}', {user['rol']}, '{user['email']}', '{dataBase_password}')""")
+	cur.execute(f"""INSERT INTO Usuario VALUES (NULL, '{user['nombres']}', {user['rol']}, '{user['email']}', '{dataBase_password}')""")
 	con.commit()
 
 
@@ -143,17 +152,12 @@ with open('libros.tsv', 'r', encoding='utf-8') as f:
 	libros = [x.split("\t") for x in f.readlines()]
 
 for author, title, cover, description in libros[:100]:
-	res = cur.execute(f"SELECT id FROM Author WHERE name=\"{author}\"")
-	if res.rowcount == -1:
-		cur.execute(f"""INSERT INTO Author VALUES (NULL, \"{author}\")""")
-		con.commit()
-		res = cur.execute(f"SELECT id FROM Author WHERE name=\"{author}\"")
-	author_id = res.fetchone()[0]
-
-	cur.execute("INSERT INTO Book VALUES (NULL, ?, ?, ?, ?)",
-		            (title, author_id, cover, description.strip()))
+	now = datetime.now()
+	cur.execute("INSERT INTO Libro VALUES (?, ?, ?, ?, ?, true)",
+		            (title, author, cover, description.strip(), now))
 
 	con.commit()
+
 
 # Reseñas
 cur.execute("INSERT INTO Resenna VALUES (?, ?, ?, ?)",
@@ -165,4 +169,3 @@ cur.execute("INSERT INTO Resenna VALUES (?, ?, ?, ?)",
 cur.execute("INSERT INTO Resenna VALUES (?, ?, ?, ?)",
 		            (2, 1, "Recomendable.", 4))
 con.commit()
-
