@@ -34,7 +34,7 @@ cur.execute("""
 
 cur.execute("""
 	CREATE TABLE User(
-		IdU integer primary key AUTOINCREMENT,
+		id integer primary key AUTOINCREMENT,
 		Nombre varchar(255),
 		Rol integer(10),
 		Email varchar(30),

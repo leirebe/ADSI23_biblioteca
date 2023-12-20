@@ -16,14 +16,14 @@
         <p>No hay descripción disponible para este libro.</p>
     {% endif %}
 
-    {% set availableCopies = Library %}
-    <p>Copias disponibles: {{ availableCopies.0 }}</p>
+    <!--{% set copiesInfo = book.getCopies() %}
+    #<p>Copias disponibles: {{ copiesInfo[1] }}</p>
 
-    {% if availableCopies.0 > 0 %}
-        <p><button id="reservarBtn" onclick="reservarLibro()">Reservar Libro</button></p>
+    {% if copiesInfo[1] > 0 %}
+    <p><button id="reservarBtn" onclick="reservarLibro()">Reservar Libro</button></p>
     {% else %}
-        <p><button id="reservarBtnDisabled" disabled>No hay copias disponibles</button></p>
-    {% endif %}
+    <p><button id="reservarBtnDisabled" disabled>No hay copias disponibles</button></p>
+    {% endif %} --!>
 
     <h3>Reseñas:</h3>
     {% for resenna in resennas %}
