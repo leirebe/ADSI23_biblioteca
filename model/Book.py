@@ -14,7 +14,6 @@ class Book:
         self.cover = cover
         self.description = description
         self.puntuacion = 0.0
-        self.copies = BookCopy.generate_copies(book=self)
 
     @property
     def author(self):
@@ -23,24 +22,13 @@ class Book:
             self._author = Author(em[0], em[1])
         return self._author
 
+
     def agregarResennas(Resenna, self):  # NO sabemos si es necesaria esta función
         self.listaResennas.append(Resenna)
 
     @author.setter
     def author(self, value):
         self._author = value
-
-    def availableCopies(self):
-        print("Total de copias:", len(self.copies))
-        copiasDisp = [copy.idCopia for copy in self.copies if copy.available]
-        print("Copias disponibles:", copiasDisp)
-        return len(copiasDisp), copiasDisp
-
-    def actualizarDisponibilidad(self):
-        print("Total de copias:", len(self.copies)-1)
-        copiasDisp = [copy.idCopia for copy in self.copies if copy.available]
-        print("Copias disponibles:", copiasDisp)
-        return len(copiasDisp)-1, copiasDisp
 
     def getResennas(self):
         em=db.select("SELECT * FROM Resenna WHERE libroIdLibro=?",(self.idLibro,))
