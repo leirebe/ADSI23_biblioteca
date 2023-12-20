@@ -13,6 +13,7 @@ class Book:
         self.cover = cover
         self.description = description
         self.puntuacion = 0.0
+        self.copies = self.getCopies()
 
     @property
     def author(self):
@@ -34,9 +35,22 @@ class Book:
     def author(self, value):
         self._author = value
 
+    def getCopies(self):
+        em=db.select("SELECT * FROM Reserva WHERE libroIdLibro=?",(self.idLibro,))
+        return [BookCopy(copy[0], self) for copy in em]
+
+    def getNumCopies(self):
+        em=db.select("SELECT COUNT(*) FROM Reserva WHERE libroIdLibro=?",(self.idLibro,))
+        return em
+
     def getResennas(self):
         em=db.select("SELECT * FROM Resenna WHERE libroIdLibro=?",(self.idLibro,))
         return [Resenna(r[0],self,r[2],r[3]) for r in em]
+
+    def insertarResenna(self, idUsuario, comentario, puntuacion):
+        nueva_resenna = Resenna(idUsuario, self.idLibro, comentario, puntuacion)
+        db.execute("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, Puntuacion) VALUES (?, ?, ?, ?)",
+                   (nueva_resenna.Usuario, nueva_resenna.Libro, nueva_resenna.comment, nueva_resenna.puntuacion))
 
     def __str__(self):
         return f"{self.title} ({self.author})"
