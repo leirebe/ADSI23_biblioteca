@@ -112,7 +112,8 @@ cur.execute("""
 	CREATE TABLE CopiaLibro( 
 		idCopia integer primary key AUTOINCREMENT,
 		LibroidLibro integer,
-		FechaHora date
+		FechaHoraInicio date, 
+		FechaEntrega date
 	)
 """)
 
