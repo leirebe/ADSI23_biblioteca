@@ -1,6 +1,7 @@
 from .LibraryController import LibraryController
 from flask import Flask, render_template, request, make_response, redirect
 from datetime import datetime
+from controller.Sistema import Sistema
 
 app = Flask(__name__, static_url_path='', static_folder='../view/static', template_folder='../view/')
 
@@ -30,6 +31,8 @@ def add_cookies(response):
 
 @app.route('/')
 def index():
+	sistema = Sistema()
+	sistema.generarListaRecomendaciones(1)
 	return render_template('index.html')
 
 
@@ -64,16 +67,6 @@ def perfil():
 		user = library.get_user_id(userId)
 
 	return render_template('perfil.html',user=user)
-
-
-@app.route('/reserve')
-def reserve_book():
-	user_id = request.user.id if 'user' in dir(request) and request.user else None
-	bookId = request.values.get("id", "")
-	copyId = request.values.get("copyId", "")
-	reservation_time = get_current_time()
-	res = library.reserve_copy(user_id, bookId, copyId, reservation_time)
-	return render_template('reserva.html', result=res)
 
 
 @app.route('/reserve')

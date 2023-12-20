@@ -21,7 +21,6 @@ class BookCopy:
         copies = [cls(book, f"{book.idLibro}_copy_{i}") for i in range(1, total_copies + 1)]
 
         return copies
-
     def reserve(self):
         if self.available:
             self.available = False
