@@ -76,6 +76,16 @@ def reserve_book():
 	return render_template('reserva.html', result=res)
 
 
+@app.route('/reserve')
+def reserve_book():
+	user_id = request.user.id if 'user' in dir(request) and request.user else None
+	bookId = request.values.get("id", "")
+	copyId = request.values.get("copyId", "")
+	reservation_time = get_current_time()
+	res = library.reserve_copy(user_id, bookId, copyId, reservation_time)
+	return render_template('reserva.html', result=res)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if 'user' in dir(request) and request.user and request.user.token: #esta linea indica que el user ha iniciado sesion
