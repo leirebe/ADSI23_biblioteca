@@ -3,7 +3,6 @@ import random
 import sqlite3
 import json
 import os
-from datetime import datetime
 
 db_path = os.path.join(os.path.dirname(__file__), '..', 'datos.db')
 if os.path.exists(db_path):
@@ -23,14 +22,13 @@ cur.execute("""
 """)
 
 cur.execute("""
-	CREATE TABLE Libro(
-		idLibro integer primary key AUTOINCREMENT,
-		Titulo varchar(50),
-		Autor varchar(40),
-		Cover varchar(50),
-		Descripcion TEXT,
-		FechaHora date,
-		Disponible boolean
+	CREATE TABLE Book(
+		id integer primary key AUTOINCREMENT,
+		title varchar(50),
+		author integer,
+		cover varchar(50),
+		description TEXT,
+		FOREIGN KEY(author) REFERENCES Author(id)
 	)
 """)
 
@@ -89,7 +87,7 @@ cur.execute("""
 		UsuarioIdU integer(10),
 		LibroIdLibro integer(10),
 		FOREIGN KEY(UsuarioIdU) REFERENCES User(IdU),
-		FOREIGN KEY(LibroIdLibro) REFERENCES Libro(IdLibro)
+		FOREIGN KEY(LibroIdLibro) REFERENCES Book(id)
 	)
 """)
 
@@ -113,7 +111,7 @@ cur.execute("""
 		Comentario varchar(255),
 		puntuacion integer(10),
 		FOREIGN KEY(UsuarioIdU) REFERENCES User(IdU),
-		FOREIGN KEY(LibroIdLibro) REFERENCES Libro(IdLibro)
+		FOREIGN KEY(LibroIdLibro) REFERENCES Book(id)
 	)
 """)
 
@@ -121,7 +119,7 @@ cur.execute("""
 	CREATE TABLE CopiaLibro( 
 		IdCopia integer primary key AUTOINCREMENT,
 		LibroidLibro integer,
-		FOREIGN KEY(LibroIdLibro) REFERENCES Libro(IdLibro)
+		FOREIGN KEY(LibroIdLibro) REFERENCES Book(id)
 	)
 """)
 
@@ -161,9 +159,8 @@ for author, title, cover, description in libros:
 		res = cur.execute(f"SELECT id FROM Author WHERE name=\"{author}\"")
 	author_id = res.fetchone()[0]
 
-	now = datetime.now()
-	cur.execute("INSERT INTO Libro VALUES (NULL, ?, ?, ?, ?, ?, ?)",
-		            (title, author, cover, description.strip(), now, True))
+	cur.execute("INSERT INTO Book VALUES (NULL, ?, ?, ?, ?)",
+		            (title, author_id, cover, description.strip()))
 
 	libro_id= cur.lastrowid #id del último libro
 	random.seed(42)
