@@ -3,18 +3,18 @@ import random
 import sqlite3
 import json
 import os
-import datetime
+from datetime import datetime
 
-os.remove("datos.db")
+db_path = os.path.join(os.path.dirname(__file__), '..', 'datos.db')
+if os.path.exists(db_path):
+    os.remove(db_path)
 
 salt = "library"
 
-
-con = sqlite3.connect("datos.db")
+con = sqlite3.connect(db_path)
 cur = con.cursor()
 
-
-### Create tables
+###Create tables
 cur.execute("""
 	CREATE TABLE Author(
 		id integer primary key AUTOINCREMENT,
@@ -30,11 +30,12 @@ cur.execute("""
 		Cover varchar(50),
 		Descripcion TEXT,
 		FechaHora date,
+		Disponible boolean
 	)
 """)
 
 cur.execute("""
-	CREATE TABLE Usuario(
+	CREATE TABLE User(
 		IdU integer primary key AUTOINCREMENT,
 		Nombre varchar(255),
 		Rol integer(10),
@@ -56,7 +57,7 @@ cur.execute("""
 		MensajeUsuarioIdU integer(10),
 		MensajeTemaIdTema integer(10),
 		FOREIGN KEY(TemaIdTema) REFERENCES Mensaje(TemaIdTema),
-		FOREIGN KEY(TensajeIdM) REFERENCES Mensaje(IdM)
+		FOREIGN KEY(MensajeIdM) REFERENCES Mensaje(IdM)
 	)
 """)
 
@@ -68,7 +69,7 @@ cur.execute("""
 		Receptor integer(20),
 		Mensaje varchar(255),
 		FechaHora date,
-		FOREIGN KEY(UsuarioIdU) REFERENCES Usuario(IdU),
+		FOREIGN KEY(UsuarioIdU) REFERENCES User(IdU),
 		FOREIGN KEY(TemaIdTema) REFERENCES Tema(IdTema)
 	)
 """)
@@ -78,8 +79,8 @@ cur.execute("""
 		UsuarioIdU integer(10),
 		UsuarioIdU2 integer(10),
 		Aceptada boolean,
-		FOREIGN KEY(UsuarioIdU) REFERENCES Usuario(IdU),
-		FOREIGN KEY(UsuarioIdU2) REFERENCES Usuario(IdU)
+		FOREIGN KEY(UsuarioIdU) REFERENCES User(IdU),
+		FOREIGN KEY(UsuarioIdU2) REFERENCES User(IdU)
 	)
 """)
 
@@ -87,8 +88,8 @@ cur.execute("""
 	CREATE TABLE Recomendacion(
 		UsuarioIdU integer(10),
 		LibroIdLibro integer(10),
-		FOREIGN KEY(UsuarioIdU) REFERENCES Usuario(IdU),
-		FOREIGN KEY(LibroIdLibro) REFERENCES LIbro(IdLibro)
+		FOREIGN KEY(UsuarioIdU) REFERENCES User(IdU),
+		FOREIGN KEY(LibroIdLibro) REFERENCES Libro(IdLibro)
 	)
 """)
 
@@ -100,7 +101,7 @@ cur.execute("""
 		FechaHoraInicio date, 
 		FechaEntrega date,
 		FOREIGN KEY(UsuarioIdU) REFERENCES Usuario(IdU),
-		FOREIGN KEY(CopiaLibroIdCopia) REFERENCES CopiaLibro(IdCopia)
+		FOREIGN KEY(IdCopiaLibro) REFERENCES CopiaLibro(IdCopia)
 	)
 """)
 
@@ -111,8 +112,8 @@ cur.execute("""
 		LibroIdLibro integer(10),
 		Comentario varchar(255),
 		puntuacion integer(10),
-		FOREIGN KEY(UsuarioIdU) REFERENCES Usuario(IdU),
-		FOREIGN KEY(IibroIdLibro) REFERENCES Libro(IdLibro)
+		FOREIGN KEY(UsuarioIdU) REFERENCES User(IdU),
+		FOREIGN KEY(LibroIdLibro) REFERENCES Libro(IdLibro)
 	)
 """)
 
@@ -129,47 +130,58 @@ cur.execute("""
 		session_hash varchar(32) primary key,
 		user_id integer,
 		last_login float,
-		FOREIGN KEY(user_id) REFERENCES Usuario(IdU)
+		FOREIGN KEY(user_id) REFERENCES User(IdU)
 	)
 """)
 
 ### Insert users
+users_path = os.path.join(os.path.dirname(__file__), '..', 'usuarios.json')
 
-with open('usuarios.json', 'r') as f:
+with open(users_path, 'r') as f:
 	usuarios = json.load(f)['usuarios']
 
 for user in usuarios:
 	dataBase_password = user['password'] + salt
 	hashed = hashlib.md5(dataBase_password.encode())
 	dataBase_password = hashed.hexdigest()
-	cur.execute(f"""INSERT INTO Usuario VALUES (NULL, '{user['nombres']}', {user['rol']}, '{user['email']}', '{dataBase_password}')""")
+	cur.execute(f"""INSERT INTO User VALUES (NULL, '{user['nombres']}', {user['rol']}, '{user['email']}', '{dataBase_password}')""")
 	con.commit()
 
 
-#### Insert books con sus respectivas copias
-with open('libros.tsv', 'r', encoding='utf-8') as f:
+#### Insert books
+books_path = os.path.join(os.path.dirname(__file__), '..', 'libros.tsv')
+with open(books_path, 'r', encoding='utf-8') as f:
 	libros = [x.split("\t") for x in f.readlines()]
 
-for author, title, cover, description in libros[:100]:
+for author, title, cover, description in libros:
+	res = cur.execute(f"SELECT id FROM Author WHERE name=\"{author}\"")
+	if res.rowcount == -1:
+		cur.execute(f"""INSERT INTO Author VALUES (NULL, \"{author}\")""")
+		con.commit()
+		res = cur.execute(f"SELECT id FROM Author WHERE name=\"{author}\"")
+	author_id = res.fetchone()[0]
+
 	now = datetime.now()
-	cur.execute("INSERT INTO Libro VALUES (?, ?, ?, ?, ?, true)",
-		            (title, author, cover, description.strip(), now))
+	cur.execute("INSERT INTO Libro VALUES (NULL, ?, ?, ?, ?, ?, ?)",
+		            (title, author, cover, description.strip(), now, True))
+
 	libro_id= cur.lastrowid #id del último libro
 	random.seed(42)
 	random_range = int(hashlib.sha256(str(libro_id).encode()).hexdigest(), 16) % 5 + 1
 	total_copies = random.randint(1, random_range)
 	for _ in range(1, total_copies + 1):
 		cur.execute("INSERT INTO CopiaLibro (LibroIdLibro) VALUES (?)", (libro_id,))
+
 	con.commit()
 
 
 # Reseñas
-cur.execute("INSERT INTO Resenna VALUES (?, ?, ?, ?)",
+cur.execute("INSERT INTO Resenna VALUES (NULL, ?, ?, ?, ?)",
 		            (1, 2, "Muy bueno.", 4))
-cur.execute("INSERT INTO Resenna VALUES (?, ?, ?, ?)",
+cur.execute("INSERT INTO Resenna VALUES (NULL, ?, ?, ?, ?)",
 		            (2, 2, "Excelente.", 5))
-cur.execute("INSERT INTO Resenna VALUES (?, ?, ?, ?)",
+cur.execute("INSERT INTO Resenna VALUES (NULL, ?, ?, ?, ?)",
 		            (3, 1, "No me ha gustado.", 1))
-cur.execute("INSERT INTO Resenna VALUES (?, ?, ?, ?)",
+cur.execute("INSERT INTO Resenna VALUES (NULL, ?, ?, ?, ?)",
 		            (2, 1, "Recomendable.", 4))
 con.commit()
