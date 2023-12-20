@@ -5,7 +5,6 @@ from .Resenna import Resenna
 
 db = Connection()
 
-
 class Book:
     def __init__(self, idLibro, title, author, cover, description):
         self.idLibro = idLibro
