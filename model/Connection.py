@@ -1,5 +1,5 @@
 import sqlite3
-
+import os
 class Connection:
 	__instance = None
 	def __new__(cls):

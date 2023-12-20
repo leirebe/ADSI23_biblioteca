@@ -63,7 +63,7 @@ class LibraryController:
 
 
 	def get_user_cookies(self, token, time):
-		user = db.select("SELECT u.* from User u, Session s WHERE u.id = s.user_id AND s.last_login = ? AND s.session_hash = ?", (time, token))
+		user = db.select("SELECT u.* from User u, Session s WHERE u.IdU = s.user_id AND s.last_login = ? AND s.session_hash = ?", (time, token))
 		if len(user) > 0:
 			return User(user[0][0], user[0][1], user[0][2], user[0][3])
 		else:
@@ -75,4 +75,18 @@ class LibraryController:
 			return User(user[0][0], user[0][1], user[0][2], user[0][3])
 		else:
 			return None
+
+	def create_user(self, nombre, email, password):
+		# Verificar si el usuario ya existe con el mismo correo electrónico
+		existing_user = db.select("SELECT * FROM User WHERE email = ?", (email,))
+		if existing_user:
+			return None  # El usuario ya existe
+
+		# Crear un nuevo usuario con nombre, correo electrónico y contraseña
+		user_id = db.insert("INSERT INTO User(nombre, email, password) VALUES (?, ?, ?)",
+							(nombre, email, hash_password(password)))
+		if user_id:
+			return User(user_id, nombre, email, hash_password(password))  # Devolver el nuevo usuario
+		else:
+			return None  # Error al crear el usuario
 
