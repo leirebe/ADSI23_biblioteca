@@ -35,7 +35,6 @@ def index():
 	sistema.generarListaRecomendaciones(1)
 	return render_template('index.html')
 
-
 @app.route('/catalogue')
 def catalogue():
 	title = request.values.get("title", "")
@@ -113,6 +112,36 @@ def logout():
 		request.user.delete_session(request.user.token)
 		request.user = None
 	return resp
+
+@app.route('/registro', methods=['GET', 'POST'])
+def registro():
+    if 'user' in dir(request) and request.user and request.user.token:
+        return redirect('/')
+
+    if request.method == 'POST':
+        nombre = request.form.get("nombre", "")
+        email = request.form.get("email", "")
+        password = request.form.get("password", "")
+        confirm_password = request.form.get("confirm_password", "")
+
+        # Validar si las contraseñas coinciden
+        if password != confirm_password:
+            return render_template('registro.html', error="Las contraseñas no coinciden")
+
+        # Crear un nuevo usuario
+        user = library.create_user(nombre, email, password)
+
+        if user:
+            # Iniciar sesión automáticamente después del registro
+            session = user.new_session()
+            resp = redirect("/")
+            resp.set_cookie('token', session.hash)
+            resp.set_cookie('time', str(session.time))
+            return resp
+        else:
+            return render_template('registro.html', error="Error en el registro. Intenta nuevamente.")
+    else:
+        return render_template('registro.html')
 
 
 def get_current_time():
