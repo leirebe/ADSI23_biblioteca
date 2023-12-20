@@ -1,6 +1,9 @@
 import hashlib
 import sqlite3
 import json
+import os
+
+os.remove("datos.db")
 
 salt = "library"
 
@@ -18,22 +21,21 @@ cur.execute("""
 """)
 
 cur.execute("""
-	CREATE TABLE Libro(
-		idLibro integer primary key AUTOINCREMENT,
-		titulo varchar(50),
-		autor varchar(40),
-		genero varchar(50),
-		disponible boolean,
-		fechaHora date,
-		FOREIGN KEY(autor) REFERENCES Author(id)
+	CREATE TABLE Book(
+		id integer primary key AUTOINCREMENT,
+		title varchar(50),
+		author varchar(40),
+		cover varchar(50),
+		description TEXT,
+		FOREIGN KEY(author) REFERENCES Author(id)
 	)
 """)
 
 cur.execute("""
 	CREATE TABLE User(
-		idU integer primary key AUTOINCREMENT,
+		id integer primary key AUTOINCREMENT,
 		nombre varchar(20),
-		rol integer(1)
+		rol integer(1),
 		email varchar(30),
 		password varchar(32)
 	)
@@ -57,7 +59,7 @@ cur.execute("""
 cur.execute("""
 	CREATE TABLE Mensaje(
 		idM integer primary key AUTOINCREMENT,
-		usuarioIdU integer(20)
+		usuarioIdU integer(20),
 		temaIdTema integer(20),
 		receptor integer(20),
 		texto varchar(255),
@@ -70,7 +72,7 @@ cur.execute("""
 cur.execute("""
 	CREATE TABLE Solicitud(
 		usuarioIdU integer(10),
-		usuarioIdU2 integer(10)
+		usuarioIdU2 integer(10),
 		aceptada boolean,
 		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
 		FOREIGN KEY(usuarioIdU2) REFERENCES Usuario(idU)
@@ -80,7 +82,7 @@ cur.execute("""
 cur.execute("""
 	CREATE TABLE Recomendacion(
 		usuarioIdU integer(10),
-		libroIdLibro integer(10)
+		libroIdLibro integer(10),
 		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
 		FOREIGN KEY(libroIdLibro) REFERENCES LIbro(idLibro)
 	)
@@ -91,7 +93,7 @@ cur.execute("""
 		usuarioIdU integer(10),
 		copiaLibroIdCopia integer(10),
 		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
-		FOREIGN KEY(libroIdLibro) REFERENCES CopiaLibro(idCopia)
+		FOREIGN KEY(copiaLibroIdCopia) REFERENCES CopiaLibro(idCopia)
 	)
 """)
 
@@ -100,6 +102,7 @@ cur.execute("""
 		usuarioIdU integer(10),
 		libroIdLibro integer(10),
 		texto varchar(255),
+		puntuacion integer,
 		FOREIGN KEY(usuarioIdU) REFERENCES Usuario(idU),
 		FOREIGN KEY(libroIdLibro) REFERENCES Libro(idLibro)
 	)
@@ -131,15 +134,15 @@ for user in usuarios:
 	dataBase_password = user['password'] + salt
 	hashed = hashlib.md5(dataBase_password.encode())
 	dataBase_password = hashed.hexdigest()
-	cur.execute(f"""INSERT INTO User VALUES (NULL, '{user['nombres']}', '{user['email']}', '{dataBase_password}')""")
+	cur.execute(f"""INSERT INTO User VALUES (NULL, '{user['nombres']}', {user['rol']}, '{user['email']}', '{dataBase_password}')""")
 	con.commit()
 
 
 #### Insert books
-with open('libros.tsv', 'r') as f:
+with open('libros.tsv', 'r', encoding='utf-8') as f:
 	libros = [x.split("\t") for x in f.readlines()]
 
-for author, title, cover, description in libros:
+for author, title, cover, description in libros[:100]:
 	res = cur.execute(f"SELECT id FROM Author WHERE name=\"{author}\"")
 	if res.rowcount == -1:
 		cur.execute(f"""INSERT INTO Author VALUES (NULL, \"{author}\")""")
@@ -152,5 +155,14 @@ for author, title, cover, description in libros:
 
 	con.commit()
 
-
+# Reseñas
+cur.execute("INSERT INTO Resenna VALUES (?, ?, ?, ?)",
+		            (1, 2, "Muy bueno.", 4))
+cur.execute("INSERT INTO Resenna VALUES (?, ?, ?, ?)",
+		            (2, 2, "Excelente.", 5))
+cur.execute("INSERT INTO Resenna VALUES (?, ?, ?, ?)",
+		            (3, 1, "No me ha gustado.", 1))
+cur.execute("INSERT INTO Resenna VALUES (?, ?, ?, ?)",
+		            (2, 1, "Recomendable.", 4))
+con.commit()
 
