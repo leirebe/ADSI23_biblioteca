@@ -1,4 +1,6 @@
 import datetime
+
+from .Book import Book
 from .Connection import Connection
 from .tools import hash_password
 
@@ -44,3 +46,31 @@ class User:
 
 	def delete_session(self, session_hash):
 		db.delete("DELETE FROM Session WHERE session_hash = ? AND user_id = ?", (session_hash, self.id))
+
+	def get_libros_reservados(self):
+		# Obtener los libros en reserva del usuario actual
+		res=db.select("""
+				SELECT Book.*
+				FROM Reserva
+				JOIN CopiaLibro ON Reserva.IdCopiaLibro = CopiaLibro.IdCopia
+				JOIN Book ON CopiaLibro.LibroIdLibro = Book.id
+				WHERE Reserva.UsuarioIdU = ? AND Reserva.FechaEntrega IS NULL
+			""", (self.id,))
+		books = [Book(b[0], b[1], b[2], b[3], b[4])
+			for b in res
+		]
+		return books
+
+	def get_libros_leidos(self):
+		# Obtener los libros en reserva del usuario actual
+		res=db.select("""
+				SELECT Book.*
+				FROM Reserva
+				JOIN CopiaLibro ON Reserva.IdCopiaLibro = CopiaLibro.IdCopia
+				JOIN Book ON CopiaLibro.LibroIdLibro = Book.id
+				WHERE Reserva.UsuarioIdU = ? AND Reserva.FechaEntrega IS NOT NULL
+			""", (self.id,))
+		books = [Book(b[0], b[1], b[2], b[3], b[4])
+			for b in res
+		]
+		return books

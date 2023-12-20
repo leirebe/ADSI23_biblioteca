@@ -1,3 +1,5 @@
+import sqlite3
+
 from .LibraryController import LibraryController
 from flask import Flask, render_template, request, make_response, redirect
 from datetime import datetime
@@ -75,10 +77,14 @@ def perfil():
 	userId = request.values.get("id", -1)
 	if userId==-1:
 		user = request.user
+		reservados = user.get_libros_reservados()
 	else:
 		user = library.get_user_id(userId)
+		reservados = None
+	historial = user.get_libros_leidos()
 
-	return render_template('perfil.html',user=user)
+	return render_template('perfil.html', user=user, libros_en_reserva=reservados, historial_lectura=historial)
+
 
 @app.route('/reserve')
 def reserve_book():
