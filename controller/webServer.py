@@ -60,9 +60,9 @@ def book():
 def reserve_book():
 	user_id = request.user.id if 'user' in dir(request) and request.user else None
 	bookId = request.values.get("id", "")
-	copyId = request.values.get("copyId", "")
+	#copyId = request.values.get("copyId", "")
 	reservation_time = get_current_time()
-	res = library.reserve_copy(user_id, bookId, copyId, reservation_time)
+	res = library.reserve_copy(user_id, bookId, reservation_time)
 	return render_template('reserva.html', result=res)
 
 

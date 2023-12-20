@@ -46,8 +46,8 @@ class LibraryController:
 		else:
 			return None
 
-	def reserve_copy(self, user_id, book_id, copy_id, reserve_time):
-		book = self.getBook(book_id) #es necesario??
+	def reserve_copy(self, user_id, book_id, reserve_time):
+		book = self.getBook(book_id) #es necesario??si
 		copy = book.get_copy(copy_id)
 		if copy and copy.available:
 			copy.available = False
