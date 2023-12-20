@@ -46,6 +46,10 @@ def catalogue():
 	return render_template('catalogue.html', books=books, title=title, author=author, current_page=page,
 	                       total_pages=total_pages, max=max, min=min)
 
+@app.route('/resenna')
+def resenna():
+
+	return render_template('resenna.html')
 
 @app.route('/book')
 def book():
@@ -69,7 +73,6 @@ def perfil():
 		user = library.get_user_id(userId)
 
 	return render_template('perfil.html',user=user)
-
 
 @app.route('/reserve')
 def reserve_book():
