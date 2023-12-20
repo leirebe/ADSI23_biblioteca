@@ -36,12 +36,12 @@ class Book:
         self._author = value
 
     def getCopies(self):
-        em=db.select("SELECT * FROM Reserva WHERE libroIdLibro=?",(self.idLibro,))
-        return [BookCopy(copy[0], self) for copy in em]
+        em=db.select("SELECT * FROM Reserva WHERE IdCopiaLibro=?",(self.idLibro,))
+        copies = [BookCopy(copy[0], self) for copy in em]
+        total_copies = len(copies)
+        return [copies, total_copies]
 
-    def getNumCopies(self):
-        em=db.select("SELECT COUNT(*) FROM Reserva WHERE libroIdLibro=?",(self.idLibro,))
-        return em
+
 
     def getResennas(self):
         em=db.select("SELECT * FROM Resenna WHERE libroIdLibro=?",(self.idLibro,))

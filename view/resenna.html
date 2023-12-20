@@ -8,7 +8,8 @@
 
 <div class="container p-5 my-5 border">
 
-<form class="form-inline" method="POST">
+<form class="form-inline" id="resenaForm" method="POST" action="/enviar_resena/{{ libro_id }}">
+
   <!-- Comentario input -->
   <div class="input-group mb-2 mr-sm-2">
       <label class="col-sm-2 col-form-label" for="comentario">Comentario</label>
@@ -23,36 +24,10 @@
 
   <!-- Submit button -->
      <!-- <button type="submit" class="btn btn-primary btn-block mb-4">Enviar</button> -->
-    <button type="button" class="btn btn-primary mb-2" onclick="enviarResena()">Enviar Reseña</button>
+     <button type="submit" class="btn btn-primary mb-2">Enviar Reseña</button>
 
 </form>
 
 </div>
-
-<script>
-
-    function enviarResena() {
-
-        var comentario = document.getElementById('comentario').value;
-        var puntuacion = document.getElementById('puntuacion').value;
-
-        var formData = new FormData();
-        formData.append('comentario', comentario);
-        formData.append('puntuacion', puntuacion);
-
-        fetch('/ruta/a/tu/python', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            console.log('Respuesta recibida del servidor');
-            window.location.href = '/perfil';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
-</script>
 
 {% endblock %}
