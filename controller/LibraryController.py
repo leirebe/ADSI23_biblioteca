@@ -1,4 +1,4 @@
-from model import Connection, Book, User, Reserva
+from model import Connection, Book, User, Reserva, BookCopy
 from model.tools import hash_password
 
 db = Connection()
@@ -46,12 +46,31 @@ class LibraryController:
 		else:
 			return None
 
+
+	def get_copies(self, id_):
+		res = db.select("""
+				SELECT c.* 
+				FROM CopiaLibro c
+				WHERE c.idCopiaLibro = ?
+			""", (id_,))
+		if len(res) == 1:
+			b = res[0]
+			return BookCopy(b[0], b[1])
+		else:
+			return None
+
+	def get_copies_available(self, bc_):
+		res = db.select("""
+				SELECT r.*
+				FROM Reserva r
+				WHERE r.fechaEntrega != null AND r.idCopiaLibro = ?
+			""", (bc_[0]))
 	def reserve_copy(self, user_id, book_id, reserve_time):
 		book = self.getBook(book_id) #es necesario
 		unique_id= Reserva.generate_unique_id()
 		reserva = Reserva(idReserva=unique_id, idUsuario=user_id, idLibro=book_id, puntuacion=0, resenna="")
-		self.db.insert("INSERT INTO Reserva(idReserva, idUsuario, fechaReserva) VALUES (?, ?, ?, ?)",
-						   (unique_id, user_id, reserve_time ))
+		#self.db.insert("INSERT INTO Reserva(idReserva, idUsuario, fechaReserva) VALUES (?, ?, ?, ?)",
+						  # (unique_id, user_id, reserve_time)
 
 
 	def get_user(self, email, password):
