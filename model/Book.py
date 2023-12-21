@@ -36,6 +36,7 @@ class Book:
         em = db.select("SELECT * FROM Resenna WHERE libroIdLibro=?",(self.idLibro,))
         return [Resenna(r[0],self,r[2],r[3]) for r in em]
 
+
     def __str__(self):
         return f"{self.title} ({self.author})"
 
