@@ -79,7 +79,6 @@ def perfil():
 		user = library.get_user_id(userId)
 		reservados = None
 	historial = user.get_libros_leidos()
-
 	return render_template('perfil.html', user=user, libros_en_reserva=reservados, historial_lectura=historial)
 
 @app.route('/devolverUnLibro')
