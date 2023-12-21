@@ -1,11 +1,9 @@
 import sqlite3
 
 from . import BookCopy, Connection, Author, Resenna
-
-Resenna = Resenna.Resenna
+import datetime
 
 db = Connection()
-
 
 class Book:
     def __init__(self, idLibro, title, author, cover, description):
@@ -27,7 +25,7 @@ class Book:
     def insertarResennaUsuario(self, idUsuario, comentario, puntuacion):
         resennas_usuario = self.getResennasUsuario(idUsuario)
         if resennas_usuario:
-            self.deleteResennaUsuario(idUsuario)  # Si el usuario tiene una reseña la eliminamos
+            self.deleteResennaUsuario(idUsuario) #Si el usuario tiene una reseña la eliminamos
             self.insertarResenna(idUsuario, comentario, puntuacion)
 
     def getResennasUsuario(self, idUsuario):
@@ -42,32 +40,21 @@ class Book:
         db.execute("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, Puntuacion) VALUES (?, ?, ?, ?)",
                    (nueva_resenna.Usuario, nueva_resenna.Libro, nueva_resenna.comment, nueva_resenna.puntuacion))
 
-    # Colocar en la sección donde se reserva del libro...
-    """
-    (lo necesito)
-    libro_id = request.form.get('libro_id')
-    user_id = obtener_id_usuario_actual()
-    (código)
-    con = sqlite3.connect('datos/datos.db')
-    cur = con.cursor()
-    cur.execute("INSERT INTO HistorialLectura (UsuarioIdU, LibroIdLibro) VALUES (?, ?)", (user_id, book_id))
-    con.commit()
-    con.close()
-    """
-
     @author.setter
     def author(self, value):
         self._author = value
 
     def getCopies(self):
-        em = db.select("SELECT * FROM Reserva WHERE IdCopiaLibro=?", (self.idLibro,))
+        em=db.select("SELECT * FROM Reserva WHERE IdCopiaLibro=?",(self.idLibro,))
         copies = [BookCopy(copy[0], self) for copy in em]
         total_copies = len(copies)
         return [copies, total_copies]
 
+
+
     def getResennas(self):
-        em = db.select("SELECT * FROM Resenna WHERE libroIdLibro=?", (self.idLibro,))
-        return [Resenna(r[0], self, r[2], r[3]) for r in em]
+        em=db.select("SELECT * FROM Resenna WHERE libroIdLibro=?",(self.idLibro,))
+        return [Resenna(r[0],self,r[2],r[3]) for r in em]
 
     def insertarResenna(self, idUsuario, comentario, puntuacion):
         nueva_resenna = Resenna(idUsuario, self.idLibro, comentario, puntuacion)
@@ -76,3 +63,7 @@ class Book:
 
     def __str__(self):
         return f"{self.title} ({self.author})"
+
+    def insertar_resena(usuario_id, libro_id, comentario, puntuacion):
+        db.insert("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, puntuacion, FechaHora) VALUES (?, ?, ?, ?, ?)",
+            (usuario_id, libro_id, comentario, puntuacion))

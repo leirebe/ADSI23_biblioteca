@@ -86,6 +86,19 @@ def perfil():
 
 	return render_template('perfil.html', user=user, libros_en_reserva=reservados, historial_lectura=historial)
 
+@app.route('/devolverUnLibro')
+def devolver_libro():
+	if not ('user' in dir(request) and request.user and request.user.token):
+		return redirect('/')
+	libroId = request.values.get("libroId", "")
+	reserva=library.get_reserva(libroId,request.user.id)
+	if(reserva is not None):
+		reserva.devolver_libro()
+		return redirect("/perfil")
+	else:
+		return redirect('/')
+
+
 
 @app.route('/reserve')
 def reserve_book():

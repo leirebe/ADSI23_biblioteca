@@ -12,6 +12,7 @@
         {% if libros_en_reserva %}
             {% for libro in libros_en_reserva %}
                 <li>{{ libro.titulo }} - {{ libro.autor }}</li>
+                 <button><a href="/devolverUnLibro?reservaId={{ libro.id }})">Devolver Libro</a></button>
             {% endfor %}
         {% else %}
             <p>No hay Libros en Reserva.</p>
