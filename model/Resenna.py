@@ -1,5 +1,5 @@
 from .Connection import Connection
-from .User import User
+from . import User
 
 db = Connection()
 
