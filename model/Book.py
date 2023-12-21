@@ -1,6 +1,7 @@
 import sqlite3
 
 from . import BookCopy, Connection, Author, Resenna
+import datetime
 
 db = Connection()
 
@@ -39,26 +40,6 @@ class Book:
         db.execute("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, Puntuacion) VALUES (?, ?, ?, ?)",
                    (nueva_resenna.Usuario, nueva_resenna.Libro, nueva_resenna.comment, nueva_resenna.puntuacion))
 
-    def devolver_libro(self, libro_id):
-        reserva = db.select_one("""
-            SELECT *
-            FROM Reserva
-            WHERE UsuarioIdU = ? AND IdCopiaLibro = ? AND FechaEntrega IS NULL
-        """, (self.id, libro_id))
-
-        if reserva:
-            fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            db.execute(""" 
-                UPDATE Reserva
-                SET FechaEntrega = ?
-                WHERE IdReserva = ?
-            """, (
-            fecha_actual, reserva['IdReserva']))
-            return True
-        else:
-            return False
-
     @author.setter
     def author(self, value):
         self._author = value
@@ -82,3 +63,7 @@ class Book:
 
     def __str__(self):
         return f"{self.title} ({self.author})"
+
+    def insertar_resena(usuario_id, libro_id, comentario, puntuacion):
+        db.insert("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, puntuacion, FechaHora) VALUES (?, ?, ?, ?, ?)",
+            (usuario_id, libro_id, comentario, puntuacion))

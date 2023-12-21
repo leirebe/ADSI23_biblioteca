@@ -125,3 +125,16 @@ class LibraryController:
             (user_id, copy_id, reserve_time)
         )
         return reservation_id
+
+    def get_reserva(self,libroId,userId):
+        reserva = db.select("""
+               SELECT * 
+               FROM Reserva 
+               WHERE IdCopiaLibro = ? 
+               AND UsuarioIdU = ?
+           """, (libroId, userId))
+        if reserva:
+            return Reserva(reserva[0][0], reserva[0][1], reserva[0][2], reserva[0][3], reserva[0][4], reserva[0][5],
+                           reserva[0][6], reserva[0][7])
+        else:
+            return None
