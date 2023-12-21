@@ -55,30 +55,23 @@ class LibraryController:
             "SELECT idCopia FROM CopiaLibro WHERE LibroidLibro = ?",
             (book_id,)
         )
-
         # Verificar si cada copia está disponible (no reservada)
-        result = []
-        for copy_id in available_copies:
-            is_copy_available = self.is_copy_available(copy_id[0])
-            result.append((copy_id[0], is_copy_available))
-
-        return result
+        return [copia_id[0] for copia_id in available_copies if self.is_copy_available(copia_id[0])]
 
     def is_copy_available(self, copy_id):
         # Verificar si una copia específica está disponible (no reservada)
-        current_time = datetime.now()
         reservation = db.select(
-            "SELECT FechaEntrega FROM Reserva WHERE copiaLibroIdCopia = ? AND FechaEntrega > ?",
-            (copy_id, current_time)
+            "SELECT FechaEntrega FROM Reserva WHERE IdCopiaLibro = ? AND FechaEntrega IS NULl",
+            (copy_id,)
         )
 
-        return not reservation
+        return len(reservation) == 0
 
     def reserve_copy(self, user_id, book_id, reserve_time):
-        available_copies = self.get_available_copies(book_id, reserve_time)
+        available_copies = self.get_available_copies(book_id)
         if available_copies:
-            reservation_id = self.create_reservation(user_id, available_copies[0], reserve_time)
-            return f"Reserva realizada con éxito. Número de reserva: {reservation_id}"
+            reservation = self.create_reservation(user_id, available_copies[0], reserve_time)
+            return f"Reserva realizada con éxito. Número de reserva: {reservation.idReserva}"
         else:
             return "No hay copias disponibles para reservar."
 
@@ -120,21 +113,12 @@ class LibraryController:
             return None  # Error al crear el usuario
 
     def create_reservation(self, user_id, copy_id, reserve_time):
-        reservation_id = db.insert(
-            "INSERT INTO Reserva (usuarioIdU, copiaLibroIdCopia, FechaHoraInicio, FechaEntrega) VALUES (?, ?, ?, ?)",
+        db.insert(
+            "INSERT INTO Reserva(usuarioIdU, copiaLibroIdCopia, FechaHoraInicio, FechaEntrega) VALUES (?, ?, ?, NULL)",
             (user_id, copy_id, reserve_time)
         )
-        return reservation_id
+        reserva = db.select("SELECT * FROM RESERVA WHERE UsuarioIdU= ? AND IdCopiaLibro=? AND FechaHoraInicio=? AND FechaEntrega is NULL", (user_id, copy_id, reserve_time))[0]
 
-    def get_reserva(self,libroId,userId):
-        reserva = db.select("""
-               SELECT * 
-               FROM Reserva 
-               WHERE IdCopiaLibro = ? 
-               AND UsuarioIdU = ?
-           """, (libroId, userId))
-        if reserva:
-            return Reserva(reserva[0][0], reserva[0][1], reserva[0][2], reserva[0][3], reserva[0][4], reserva[0][5],
-                           reserva[0][6], reserva[0][7])
-        else:
-            return None
+        return Reserva(reserva[0], reserva[1], reserva[2], reserva[3], reserva[4])
+
+

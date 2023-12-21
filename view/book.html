@@ -19,7 +19,7 @@
     <p>Copias disponibles: {{ num_available_copies }}</p>
 
     {% if num_available_copies > 0 %}
-    <p><button id="reservarBtn" onclick="reservarLibro()">Reservar Libro</button></p>
+    <p><button><a href="/reserve?id={{book.id}}">Reservar Libro</a></button></p>
     {% else %}
     <p><button id="reservarBtnDisabled" disabled>No hay copias disponibles</button></p>
     {% endif %}
@@ -35,12 +35,6 @@
 
     {% endfor %}
 
-    <script>
-        function reservarLibro() {
-            console.log("Función reservarLibro llamada correctamente");
-            window.location.href = '/reserve'
-        }
-    </script>
 
 </div>
 
