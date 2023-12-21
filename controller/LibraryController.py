@@ -127,3 +127,14 @@ class LibraryController:
             return Reserva(reserve[0][0], reserve[0][1], reserve[0][2], reserve[0][3], reserve[0][4])
         else:
             return None
+
+    def insert_review(self, user_id, book_id, comentario, puntuacion):
+        existing_review = db.select("SELECT * FROM Resenna WHERE UsuarioIdU = ? AND LibroIdLibro = ?",
+                                    (user_id, book_id))
+        if existing_review: #Actualizar la existente
+            db.update("UPDATE Resenna SET Comentario = ?, puntuacion = ? WHERE UsuarioIdU = ? AND LibroIdLibro = ?",
+                      (comentario, puntuacion, user_id, book_id))
+        else: #Insertar una nueva
+            db.insert("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, puntuacion) VALUES (?, ?, ?, ?)",
+                      (user_id, book_id, comentario, puntuacion))
+

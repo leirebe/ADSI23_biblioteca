@@ -33,7 +33,7 @@ class Book:
         return [copies, total_copies]
 
     def getResennas(self):
-        em=db.select("SELECT * FROM Resenna WHERE libroIdLibro=?",(self.idLibro,))
+        em = db.select("SELECT * FROM Resenna WHERE libroIdLibro=?",(self.idLibro,))
         return [Resenna(r[0],self,r[2],r[3]) for r in em]
 
     def __str__(self):

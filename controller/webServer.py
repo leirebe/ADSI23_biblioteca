@@ -53,6 +53,18 @@ def resenna():
 
 	return render_template('resenna.html')
 
+""""@app.route('/resenna', methods=['POST'])
+def insert_or_update_review():
+	if 'user' in dir(request) and request.user and request.user.token:
+		user_id = request.user.id
+		book_id = request.form.get("book_id", "")
+		comment = request.form.get("comment", "")
+		rating = request.form.get("rating", "")
+
+		library.insert_review(user_id, book_id, comment, rating)
+		return redirect('/perfil')  # Redirecciona a la página de perfil después de dejar la reseña
+	else:
+		return redirect('/login')  # Si el usuario no está autenticado, redirige al inicio de sesión"""
 
 
 @app.route('/book')
@@ -72,7 +84,7 @@ def book():
 @app.route('/perfil')
 def perfil():
 	userId = request.values.get("id", -1)
-	if userId==-1:
+	if userId == -1:
 		user = request.user
 		reservados = user.get_libros_reservados()
 	else:
@@ -86,8 +98,8 @@ def devolver_libro():
 	if not ('user' in dir(request) and request.user and request.user.token):
 		return redirect('/')
 	libroId = request.values.get("libroId", "")
-	reserva=library.get_reserva(libroId,request.user.id)
-	if(reserva is not None):
+	reserva = library.get_reserva(libroId,request.user.id)
+	if reserva is not None:
 		reserva.devolver_libro()
 		return redirect("/perfil")
 	else:

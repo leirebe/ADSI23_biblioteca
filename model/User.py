@@ -60,7 +60,7 @@ class User:
 		return books
 
 	def get_libros_leidos(self):
-		res=db.select("""
+		res = db.select("""
 				SELECT Book.*
 				FROM Reserva
 				JOIN CopiaLibro ON Reserva.IdCopiaLibro = CopiaLibro.IdCopia
