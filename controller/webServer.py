@@ -53,11 +53,7 @@ def resenna():
 
 	return render_template('resenna.html')
 
-#¿LIBRO EN PARTICULAR?
-""""@app.route('/resenna/<int:libro_id>', methods=['GET'])
-def formulario_resena(libro_id):
-    # Aquí podrías pasar el ID del libro a la plantilla del formulario de reseña
-    return render_template('resenna.html', libro_id=libro_id)"""
+
 
 @app.route('/book')
 def book():
@@ -97,8 +93,6 @@ def devolver_libro():
 		return redirect("/perfil")
 	else:
 		return redirect('/')
-
-
 
 @app.route('/reserve')
 def reserve_book():

@@ -25,3 +25,6 @@ class Resenna:
 
     def __str__(self):
         return f"{self.Usuario}, {self.Libro}, {self.comment}, {self.puntuacion}"
+
+
+

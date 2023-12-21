@@ -28,6 +28,7 @@
         {% if historial_lectura %}
             {% for libro in historial_lectura %}
                 <li>{{ libro.titulo }} - {{ libro.autor }}</li>
+                <button><a href="/resenna/{{ libro.id }}">Reseñar</a></button>
             {% endfor %}
         {% else %}
             <p>No hay Libros en Historial de Lectura.</p>

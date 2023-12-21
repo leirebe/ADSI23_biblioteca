@@ -1,6 +1,6 @@
 import datetime
 
-from . import Book, Connection
+from . import Book, Connection, Resenna
 from .tools import hash_password
 
 db = Connection()
@@ -71,3 +71,5 @@ class User:
 			for b in res
 		]
 		return books
+
+
