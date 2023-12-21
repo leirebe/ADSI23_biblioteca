@@ -1,7 +1,6 @@
 import datetime
 
-from .Book import Book
-from .Connection import Connection
+from . import Book, Connection
 from .tools import hash_password
 
 db = Connection()

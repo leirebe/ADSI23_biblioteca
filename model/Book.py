@@ -1,9 +1,6 @@
 import sqlite3
 
-from .BookCopy import BookCopy
-from .Connection import Connection
-from .Author import Author
-from .Resenna import Resenna
+from . import BookCopy, Connection, Author, Resenna
 
 db = Connection()
 
@@ -42,18 +39,25 @@ class Book:
         db.execute("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, Puntuacion) VALUES (?, ?, ?, ?)",
                    (nueva_resenna.Usuario, nueva_resenna.Libro, nueva_resenna.comment, nueva_resenna.puntuacion))
 
-    #Colocar en la sección donde se reserva del libro...
-    """
-    (lo necesito)
-    libro_id = request.form.get('libro_id')
-    user_id = obtener_id_usuario_actual()
-    (código)
-    con = sqlite3.connect('datos/datos.db')
-    cur = con.cursor()
-    cur.execute("INSERT INTO HistorialLectura (UsuarioIdU, LibroIdLibro) VALUES (?, ?)", (user_id, book_id))
-    con.commit()
-    con.close()
-    """
+    def devolver_libro(self, libro_id):
+        reserva = db.select_one("""
+            SELECT *
+            FROM Reserva
+            WHERE UsuarioIdU = ? AND IdCopiaLibro = ? AND FechaEntrega IS NULL
+        """, (self.id, libro_id))
+
+        if reserva:
+            fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            db.execute(""" 
+                UPDATE Reserva
+                SET FechaEntrega = ?
+                WHERE IdReserva = ?
+            """, (
+            fecha_actual, reserva['IdReserva']))
+            return True
+        else:
+            return False
 
     @author.setter
     def author(self, value):
