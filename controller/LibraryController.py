@@ -55,7 +55,6 @@ class LibraryController:
             "SELECT idCopia FROM CopiaLibro WHERE LibroidLibro = ?",
             (book_id,)
         )
-        print("Hola",available_copies)
         # Verificar si cada copia está disponible (no reservada)
         return [copia_id[0] for copia_id in available_copies if self.is_copy_available(copia_id[0])]
 
@@ -71,8 +70,8 @@ class LibraryController:
     def reserve_copy(self, user_id, book_id, reserve_time):
         available_copies = self.get_available_copies(book_id)
         if available_copies:
-            reservation_id = self.create_reservation(user_id, available_copies[0], reserve_time)
-            return f"Reserva realizada con éxito. Número de reserva: {reservation_id}"
+            reservation = self.create_reservation(user_id, available_copies[0], reserve_time)
+            return f"Reserva realizada con éxito. Número de reserva: {reservation.idReserva}"
         else:
             return "No hay copias disponibles para reservar."
 
@@ -120,6 +119,6 @@ class LibraryController:
         )
         reserva = db.select("SELECT * FROM RESERVA WHERE UsuarioIdU= ? AND IdCopiaLibro=? AND FechaHoraInicio=? AND FechaEntrega is NULL", (user_id, copy_id, reserve_time))[0]
 
-        return Reserva(reserva[0], reserva[1], reserva[2], reserva[4])
+        return Reserva(reserva[0], reserva[1], reserva[2], reserva[3], reserva[4])
 
 
