@@ -55,27 +55,21 @@ class LibraryController:
             "SELECT idCopia FROM CopiaLibro WHERE LibroidLibro = ?",
             (book_id,)
         )
-
+        print("Hola",available_copies)
         # Verificar si cada copia está disponible (no reservada)
-        result = []
-        for copy_id in available_copies:
-            is_copy_available = self.is_copy_available(copy_id[0])
-            result.append((copy_id[0], is_copy_available))
-
-        return result
+        return [copia_id[0] for copia_id in available_copies if self.is_copy_available(copia_id[0])]
 
     def is_copy_available(self, copy_id):
         # Verificar si una copia específica está disponible (no reservada)
-        current_time = datetime.now()
         reservation = db.select(
-            "SELECT FechaEntrega FROM Reserva WHERE copiaLibroIdCopia = ? AND FechaEntrega > ?",
-            (copy_id, current_time)
+            "SELECT FechaEntrega FROM Reserva WHERE IdCopiaLibro = ? AND FechaEntrega IS NULl",
+            (copy_id,)
         )
 
-        return not reservation
+        return len(reservation) == 0
 
     def reserve_copy(self, user_id, book_id, reserve_time):
-        available_copies = self.get_available_copies(book_id, reserve_time)
+        available_copies = self.get_available_copies(book_id)
         if available_copies:
             reservation_id = self.create_reservation(user_id, available_copies[0], reserve_time)
             return f"Reserva realizada con éxito. Número de reserva: {reservation_id}"
@@ -124,7 +118,8 @@ class LibraryController:
             "INSERT INTO Reserva(usuarioIdU, copiaLibroIdCopia, FechaHoraInicio, FechaEntrega) VALUES (?, ?, ?, NULL)",
             (user_id, copy_id, reserve_time)
         )
-        reserve_id = db.select("SELECT idReserva FROM RESERVA WHERE UsuarioIdU= ? AND IdCopiaLibro=? AND FechaHoraInicio=? AND FechaEntrega is NULL", (user_id, copy_id, reserve_time))
-        return reserve_id
+        reserva = db.select("SELECT * FROM RESERVA WHERE UsuarioIdU= ? AND IdCopiaLibro=? AND FechaHoraInicio=? AND FechaEntrega is NULL", (user_id, copy_id, reserve_time))[0]
+
+        return Reserva(reserva[0], reserva[1], reserva[2], reserva[4])
 
 

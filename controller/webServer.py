@@ -66,7 +66,8 @@ def book():
 	book = library.getBook(bookId)
 	if book:
 		resennas = book.getResennas()
-		return render_template('book.html', book=book, resennas=resennas)
+		num_available_copies = len(library.get_available_copies(bookId))
+		return render_template('book.html', book=book, resennas=resennas, num_available_copies=num_available_copies)
 	else:
 		print("Libro no encontrado")
 		return render_template('book_not_found.html')

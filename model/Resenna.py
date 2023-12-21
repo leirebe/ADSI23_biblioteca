@@ -1,6 +1,8 @@
 from .Connection import Connection
 from . import User
 
+User = User.User
+
 db = Connection()
 
 class Resenna:
