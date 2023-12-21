@@ -42,3 +42,4 @@ class Book:
     def insertar_resena(usuario_id, libro_id, comentario, puntuacion):
         db.insert("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, puntuacion, FechaHora) VALUES (?, ?, ?, ?, ?)",
             (usuario_id, libro_id, comentario, puntuacion))
+
