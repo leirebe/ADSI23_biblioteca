@@ -5,9 +5,6 @@ class Reserva:
         self.idLibro = idLibro
         self.fechaHoraInicio = fechaHoraInicio
         self.fechaEntrega = fechaEntrega
-        self.devuelto = False
-        self.puntuacion = 0
-        self.resenna = ""
 
     @staticmethod
     def generate_unique_id():
