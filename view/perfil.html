@@ -8,12 +8,31 @@
 <div class="container p-5 my-5 border">
     <h3>Libros en Reserva:</h3>
 
+    <ul>
+        {% for libro in libros_en_reserva %}
+        <li>
+            <p>Titulo: {{ libro[0] }}</p>
+            <form method="post" action="/perfil">
+                <input type="hidden" name="libro_devuelto" value="{{ libro[0] }}">
+                <input type="submit" value="Devolver">
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+
 </div>
 
 
 <div class="container p-5 my-5 border">
     <h3>Historial de Lectura:</h3>
 
+    <ul>
+        {% for libro in historial_lectura %}
+        <li>
+            <p>Titulo: {{ libro[0] }} - Autor: {{ libro[1] }}</p>
+        </li>
+        {% endfor %}
+    </ul>
 
 </div>
 
