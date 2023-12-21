@@ -77,55 +77,13 @@ def perfil():
 	userId = request.values.get("id", -1)
 	if userId==-1:
 		user = request.user
+		reservados = user.get_libros_reservados()
 	else:
 		user = library.get_user_id(userId)
+		reservados = None
+	historial = user.get_libros_leidos()
 
-	#Obtener los libros en reserva del usuario actual
-	con = sqlite3.connect('datos/datos.db')
-	cur = con.cursor()
-	cur.execute("""
-		SELECT Book.title, Author.name
-		FROM Reserva
-		JOIN CopiaLibro ON Reserva.IdCopiaLibro = CopiaLibro.IdCopia
-		JOIN Book ON CopiaLibro.LibroIdLibro = Book.id
-		JOIN Author ON Book.author = Author.id
-		WHERE Reserva.UsuarioIdU = ?
-	""", (user.id,))
-
-	libros_en_reserva = cur.fetchall()
-
-	#Estado libro a devuelto
-	if request.method == 'POST':
-		libro_devuelto = request.form.get('libro_devuelto')
-		cur.execute("""
-			UPDATE Reserva
-			SET devuelto = 1
-			WHERE IdCopiaLibro = ? AND UsuarioIdU = ?
-	""", (user.id,))
-
-	cur.execute("""
-		SELECT Book.title, Author.name
-		FROM Reserva
-		JOIN CopiaLibro ON Reserva.IdCopiaLibro = CopiaLibro.IdCopia
-		JOIN Book ON CopiaLibro.LibroIdLibro = Book.id
-		JOIN Author ON Book.author = Author.id
-		WHERE Reserva.UsuarioIdU = ?
-	""", (user.id,))
-
-	#Obtener el historial de lectura del usuario
-	cur.execute("""
-		SELECT Book.title, Author.name
-		FROM HistorialLectura
-		JOIN Book ON HistorialLectura.LibroIdLibro = Book.id
-		JOIN Author ON Book.author = Author.id
-		WHERE HistorialLectura.UsuarioIdU = ?
-	""", (user.id,))
-
-	historial_lectura = cur.fetchall()
-
-	con.close()
-
-	return render_template('perfil.html', user=user, libros_en_reserva=libros_en_reserva, historial_lectura=historial_lectura)
+	return render_template('perfil.html', user=user, libros_en_reserva=reservados, historial_lectura=historial)
 
 
 @app.route('/reserve')
