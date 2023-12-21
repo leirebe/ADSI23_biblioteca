@@ -22,24 +22,6 @@ class Book:
             self._author = Author(em[0], em[1])
         return self._author
 
-    def insertarResennaUsuario(self, idUsuario, comentario, puntuacion):
-        resennas_usuario = self.getResennasUsuario(idUsuario)
-        if resennas_usuario:
-            self.deleteResennaUsuario(idUsuario) #Si el usuario tiene una reseña la eliminamos
-            self.insertarResenna(idUsuario, comentario, puntuacion)
-
-    def getResennasUsuario(self, idUsuario):
-        em = db.select("SELECT * FROM Resenna WHERE LibroIdLibro=? AND UsuarioIdU=?", (self.idLibro, idUsuario))
-        return [Resenna(r[0], r[1], r[2], r[3]) for r in em]
-
-    def deleteResennaUsuario(self, idUsuario):
-        db.execute("DELETE FROM Resenna WHERE LibroIdLibro=? AND UsuarioIdU=?", (self.idLibro, idUsuario))
-
-    def insertarResenna(self, idUsuario, comentario, puntuacion):
-        nueva_resenna = Resenna(idUsuario, self.idLibro, comentario, puntuacion)
-        db.execute("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, Puntuacion) VALUES (?, ?, ?, ?)",
-                   (nueva_resenna.Usuario, nueva_resenna.Libro, nueva_resenna.comment, nueva_resenna.puntuacion))
-
     @author.setter
     def author(self, value):
         self._author = value
@@ -50,16 +32,9 @@ class Book:
         total_copies = len(copies)
         return [copies, total_copies]
 
-
-
     def getResennas(self):
         em=db.select("SELECT * FROM Resenna WHERE libroIdLibro=?",(self.idLibro,))
         return [Resenna(r[0],self,r[2],r[3]) for r in em]
-
-    def insertarResenna(self, idUsuario, comentario, puntuacion):
-        nueva_resenna = Resenna(idUsuario, self.idLibro, comentario, puntuacion)
-        db.execute("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, Puntuacion) VALUES (?, ?, ?, ?)",
-                   (nueva_resenna.Usuario, nueva_resenna.Libro, nueva_resenna.comment, nueva_resenna.puntuacion))
 
     def __str__(self):
         return f"{self.title} ({self.author})"
