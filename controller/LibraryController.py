@@ -120,9 +120,11 @@ class LibraryController:
             return None  # Error al crear el usuario
 
     def create_reservation(self, user_id, copy_id, reserve_time):
-        reservation_id = db.insert(
-            "INSERT INTO Reserva (usuarioIdU, copiaLibroIdCopia, FechaHoraInicio, FechaEntrega) VALUES (?, ?, ?, ?)",
+        db.insert(
+            "INSERT INTO Reserva(usuarioIdU, copiaLibroIdCopia, FechaHoraInicio, FechaEntrega) VALUES (?, ?, ?, NULL)",
             (user_id, copy_id, reserve_time)
         )
+        reserve_id = db.select("SELECT idReserva FROM RESERVA WHERE UsuarioIdU= ? AND IdCopiaLibro=? AND FechaHoraInicio=? AND FechaEntrega is NULL", (user_id, copy_id, reserve_time))
+        return reserve_id
 
-        return reservation_id
+
