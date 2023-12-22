@@ -33,9 +33,11 @@ def add_cookies(response):
 
 @app.route('/')
 def index():
-	sistema = Sistema()
-	sistema.generarListaRecomendaciones(1)
-	return render_template('index.html')
+	if 'user' in dir(request) and request.user and request.user.token:
+		listaRecomendaciones = library.generarListaRecomendaciones(request.user)
+	else:
+		listaRecomendaciones = None
+	return render_template('index.html', books=listaRecomendaciones)
 
 
 @app.route('/catalogue')
