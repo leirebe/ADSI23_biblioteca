@@ -4,4 +4,29 @@
 <div class="container p-5 my-5 border">
     <h1>The best library</h1>
 </div>
+<div class="container p-5 my-5">
+    <h1>Lista de recomendaciones</h1>
+    {% if books is none %}
+        <p>Inicia sesion para ver recomendaciones</p>
+    {% else %}
+        <div class="row">
+            {% for book in books %}
+                <div class="col-lg-4 col-md-6 col-sm-12 my-2">
+                    <div class="card d-flex flex-row" style="width: 18rem;">
+                        {% if book.cover: %}
+                            <img src="{{book.cover}}" class="rounded" style="max-width: 6rem; height: fit-content;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="/book?id={{book.idLibro}}">{{book.title}}</a></h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{book.author}}</h6>
+                            {% if book.description: %}
+                                <p class="card-text">{{book.description}}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
