@@ -138,3 +138,15 @@ class LibraryController:
             db.insert("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, puntuacion) VALUES (?, ?, ?, ?)",
                       (user_id, book_id, comentario, puntuacion))
 
+    def generarListaRecomendaciones(self, user):
+        # precondicion: usuario con historial de reservas
+        # 1) acceder a su historial de reservas (id de libros)
+        listaReservas = user.get_libros_reservados()
+        listaIds = tuple([libro.idLibro for libro in listaReservas])
+        # 2) acceder a catalogo: obtener 20 libros que no se encuentren en el historial
+        placeholders = ', '.join(['?' for _ in listaIds])
+        listaLibros = db.select(f"SELECT * FROM Book WHERE id NOT IN ({placeholders}) LIMIT 20", (listaIds))
+        listaRecomendaciones = [Book(b[0], b[1], b[2], b[3], b[4]) for b in listaLibros]
+        # devolver: lista de recomendaciones (libros no leidos)
+        return listaRecomendaciones
+        # renderizar libros en: GET /
