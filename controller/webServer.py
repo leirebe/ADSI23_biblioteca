@@ -3,7 +3,7 @@ import sqlite3
 from .LibraryController import LibraryController
 from flask import Flask, render_template, request, make_response, redirect
 from datetime import datetime
-from controller.Sistema import Sistema
+#from controller.Sistema import Sistema
 
 app = Flask(__name__, static_url_path='', static_folder='../view/static', template_folder='../view/')
 

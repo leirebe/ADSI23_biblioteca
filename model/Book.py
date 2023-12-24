@@ -2,7 +2,7 @@ import sqlite3
 
 from . import BookCopy, Connection, Author, Resenna
 import datetime
-
+Resenna = Resenna.Resenna
 db = Connection()
 
 class Book:

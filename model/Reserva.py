@@ -1,6 +1,6 @@
 import datetime
 
-from controller.GestorUsuario import db
+#from controller.GestorUsuario import db
 
 
 class Reserva:
