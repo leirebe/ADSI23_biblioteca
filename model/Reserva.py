@@ -1,6 +1,8 @@
 import datetime
 
-#from controller.GestorUsuario import db
+from model import Connection
+
+db = Connection()
 
 
 class Reserva:

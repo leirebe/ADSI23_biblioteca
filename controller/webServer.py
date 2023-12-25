@@ -1,9 +1,6 @@
-import sqlite3
-
 from .LibraryController import LibraryController
 from flask import Flask, render_template, request, make_response, redirect
 from datetime import datetime
-#from controller.Sistema import Sistema
 
 app = Flask(__name__, static_url_path='', static_folder='../view/static', template_folder='../view/')
 
@@ -94,6 +91,7 @@ def perfil():
 		reservados = None
 	historial = user.get_libros_leidos()
 	return render_template('perfil.html', user=user, libros_en_reserva=reservados, historial_lectura=historial)
+
 
 @app.route('/devolverUnLibro')
 def devolver_libro():
