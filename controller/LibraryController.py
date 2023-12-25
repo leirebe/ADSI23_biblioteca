@@ -98,19 +98,19 @@ class LibraryController:
         else:
             return None
 
-    def create_user(self, nombre, email, password):
+    def create_user(self, username, email, password):
         # Verificar si el usuario ya existe con el mismo correo electrónico
-        existing_user = db.select("SELECT * FROM User WHERE email = ?", (email,))
+        existing_user = db.select("SELECT * FROM User WHERE Email = ?", (email,))
         if existing_user:
             return None  # El usuario ya existe
 
-        # Crear un nuevo usuario con nombre, correo electrónico y contraseña
-        user_id = db.insert("INSERT INTO User(nombre, email, password) VALUES (?, ?, ?)",
-                            (nombre, email, hash_password(password)))
+        # Crear un nuevo usuario con nombre de usuario, correo electrónico, contraseña y rol 0
+        user_id = db.insert("INSERT INTO User(Nombre, Email, Password, Rol) VALUES (?, ?, ?, 0)",
+                            (username, email, hash_password(password)))
         if user_id:
-            return User(user_id, nombre, email, hash_password(password))  # Devolver el nuevo usuario
+            return User(user_id, username, 0, email)  # Devolver el nuevo usuario con rol 0
         else:
-            return None  # Error al crear el usuario
+            return None
 
     def create_reservation(self, user_id, copy_id, reserve_time):
         db.insert(
@@ -150,3 +150,17 @@ class LibraryController:
         # devolver: lista de recomendaciones (libros no leidos)
         return listaRecomendaciones
         # renderizar libros en: GET /
+
+    def get_all_users(self):
+        users_data = db.select("SELECT * FROM User")
+        users = [
+            User(user[0], user[1], user[2], user[3])
+            for user in users_data
+        ]
+        return users
+
+    def delete_user(self, user_id):
+        # Lógica para eliminar el usuario con el ID proporcionado
+        # Devuelve True si la eliminación fue exitosa, False en caso contrario
+        result = db.delete("DELETE FROM User WHERE id = ?", (user_id,))
+        return result > 0

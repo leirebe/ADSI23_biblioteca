@@ -30,11 +30,12 @@ def add_cookies(response):
 
 @app.route('/')
 def index():
+	user = getattr(request, 'user', None)
 	if 'user' in dir(request) and request.user and request.user.token:
 		listaRecomendaciones = library.generarListaRecomendaciones(request.user)
 	else:
 		listaRecomendaciones = None
-	return render_template('index.html', books=listaRecomendaciones)
+	return render_template('index.html', books=listaRecomendaciones, user=user)
 
 
 @app.route('/catalogue')
@@ -175,6 +176,30 @@ def registro():
     else:
         return render_template('registro.html')
 
+@app.route('/administrar_usuarios')
+def administrar_usuarios():
+    users = library.get_all_users()
+    return render_template('administrar_usuarios.html', users=users)
+
+@app.route('/crear_usuario', methods=['POST'])
+def crear_usuario():
+    # Obtener datos del formulario
+    nombre = request.form.get("nombre", "")
+    email = request.form.get("email", "")
+    contrasena = request.form.get("contrasena", "")
+
+    # Lógica para crear el nuevo usuario en la base de datos
+    library.create_user(nombre, email, contrasena)
+
+    # Redirigir a la página de administrar usuarios
+    return redirect('/administrar_usuarios')
+
+@app.route('/eliminar_usuario/<int:user_id>', methods=['POST'])
+def eliminar_usuario(user_id):
+    # Lógica para crear el nuevo usuario en la base de datos
+    library.delete_user(user_id)
+
+    return 'Usuario eliminado con éxito'
 
 def get_current_time():
 	current_time = datetime.now()

@@ -3,11 +3,23 @@
 {% block content %}
 <div class="container p-5 my-5 border">
     <h1>The best library</h1>
+
+        {% if user.rol == 1 %}
+        <!-- Mostrar botones solo si el usuario es administrador -->
+        <div class="row justify-content-center mt-5">
+            <div class="col">
+                <a href="/administrar_usuarios" class="btn btn-primary">Administrar Usuarios</a>
+            </div>
+            <div class="col">
+                <a href="/anadir_libro" class="btn btn-primary">Añadir Libro</a>
+            </div>
+        </div>
+    {% endif %}
 </div>
 <div class="container p-5 my-5">
     <h1>Lista de recomendaciones</h1>
     {% if books is none %}
-        <p>Inicia sesion para ver recomendaciones</p>
+        <p>Inicia sesión para ver recomendaciones</p>
     {% else %}
         <div class="row">
             {% for book in books %}

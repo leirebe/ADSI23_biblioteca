@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container p-5 my-5 border">
+
+  <form class="form-inline" method="POST">
+    <!-- Nombre input -->
+    <div class="input-group mb-2 mr-sm-2">
+      <label class="col-sm-2 col-form-label" for="nombre">Name</label>
+      <input type="text" id="nombre" name="nombre" class="form-control mb-2" required />
+    </div>
+
+    <!-- Email input -->
+    <div class="input-group mb-2 mr-sm-2">
+      <label class="col-sm-2 col-form-label" for="email">Email address</label>
+      <input type="email" id="email" name="email" class="form-control mb-2" required />
+    </div>
+
+    <!-- Password input -->
+    <div class="input-group mb-2 mr-sm-2">
+      <label class="col-sm-2 col-form-label" for="password">Password</label>
+      <input type="password" id="password" name="password" class="form-control mb-2" required />
+    </div>
+
+    <!-- Confirm Password input -->
+    <div class="input-group mb-2 mr-sm-2">
+      <label class="col-sm-2 col-form-label" for="confirm_password">Confirm Password</label>
+      <input type="password" id="confirm_password" name="confirm_password" class="form-control mb-2" required />
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-primary btn-block mb-4">Register</button>
+  </form>
+
+</div>
+{% endblock %}

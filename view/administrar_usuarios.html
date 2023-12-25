@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container p-5 my-5 border">
+    <h1>Administrar Usuarios</h1>
+</div>
+<div class="container p-5 my-5">
+    <h2>Lista de Usuarios</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="eliminarUsuario({{user.id}})">Eliminar</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Botón "Añadir Usuario" -->
+    <button class="btn btn-primary mb-3" onclick="mostrarFormulario()">Añadir Usuario</button>
+
+    <!-- Formulario para añadir usuario (inicialmente oculto) -->
+    <div id="formulario-container" style="display: none;">
+        <form id="formulario" action="/crear_usuario" method="POST">
+        <!-- Agrega tus campos de formulario (nombre, email, rol, contraseña) aquí -->
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="contrasena" class="form-label">Contraseña:</label>
+                <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+            </div>
+
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function mostrarFormulario() {
+        var formularioContainer = document.getElementById('formulario-container');
+        formularioContainer.style.display = 'block';
+    }
+    function eliminarUsuario(userId) {
+        // Hacer una solicitud AJAX para eliminar el usuario
+        fetch(`/eliminar_usuario/${userId}`, {
+            method: 'POST',
+        }).then(response => {
+            if (response.ok) {
+                // Redirigir a la página actual después de eliminar el usuario
+                window.location.href = '/administrar_usuarios';
+            } else {
+                console.error('Error al eliminar el usuario');
+            }
+        });
+    }
+
+
+</script>
+
+{% endblock %}
