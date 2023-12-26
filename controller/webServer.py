@@ -6,7 +6,7 @@ app = Flask(__name__, static_url_path='', static_folder='../view/static', templa
 
 
 library = LibraryController()
-
+userAutenticado = False
 
 @app.before_request
 def get_logged_user():
@@ -86,7 +86,8 @@ def book():
 		return render_template('book.html', book=book, resennas=resennas, num_available_copies=num_available_copies)
 	else:
 		print("Libro no encontrado")
-		return render_template('book_not_found.html')
+		msj= f"El libro con el ID {bookId} no ha sido encontrado"
+		return render_template('error.html', book=book, msj=msj)
 
 
 @app.route('/perfil')
@@ -114,16 +115,25 @@ def devolver_libro():
 	else:
 		return redirect('/')
 
-@app.route('/reserve')
-def reserve_book():
-	user_id = request.user.id if 'user' in dir(request) and request.user else None
-	bookId = request.values.get("id", "")
-	book = library.getBook(bookId)
-	print(f"bookId recibido para reservar: {bookId}")
-	print(f"persona que realiza la reserva: {user_id}")
-	reservation_time = get_current_time()
-	reserva = library.reserve_copy(user_id, bookId, reservation_time)
-	return render_template('reserva.html', user=user_id, bookId=bookId,book=book, time=reservation_time, reserva=reserva)
+@app.route('/reserve', methods=['GET', 'POST'])
+def reserve_book(ultima_reserva_tiempo=None):
+	if userAutenticado:
+		if ultima_reserva_tiempo and (get_current_time() - ultima_reserva_tiempo).seconds < 300:
+			msj = b'Ya has realizado una reserva recientemente. Por favor, espera un momento antes de intentarlo de nuevo.'
+			return render_template('error.html', msj=msj)
+
+		user_id = request.user.id if 'user' in dir(request) and request.user else None
+		bookId = request.values.get("id", "")
+		print(f"bookId recibido para reservar: {bookId}")
+		print(f"persona que realiza la reserva: {user_id}")
+		reservation_time = get_current_time()
+
+		ultima_reserva_tiempo = get_current_time()
+
+		reserva = library.reserve_copy(user_id, bookId, reservation_time)
+		return render_template('reserva.html', user=user_id, bookId=bookId, book=book, time=reservation_time, reserva=reserva)
+	else:
+		return redirect('login')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -138,6 +148,8 @@ def login():
 		resp = redirect("/")
 		resp.set_cookie('token', session.hash)
 		resp.set_cookie('time', str(session.time))
+		global userAutenticado
+		userAutenticado = True
 	else:
 		if request.method == 'POST':
 			return redirect('/login')

@@ -3,6 +3,7 @@
 {% block content %}
 
 <div class="container p-5 my-5 border">
+    <p> <button><a href="/catalogue"> Volver al catálogo </a></button> </p>
     <h1>{{ book.title }}</h1>
     <p>Autor: {{ book.author.name if book.author else 'Sin autor' }}</p>
 
