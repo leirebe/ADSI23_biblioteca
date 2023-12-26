@@ -1,8 +1,11 @@
 import sqlite3
 
-from . import BookCopy, Connection, Author, Resenna
+from .BookCopy import BookCopy
+from .Connection import Connection
+from .Author import Author
+from .Resenna import Resenna
 import datetime
-Resenna = Resenna.Resenna
+
 db = Connection()
 
 class Book:

@@ -1,6 +1,6 @@
 import datetime
 
-from . import Book, Connection, Resenna
+from . import Connection, Resenna
 from .tools import hash_password
 
 db = Connection()
@@ -47,6 +47,7 @@ class User:
 		db.delete("DELETE FROM Session WHERE session_hash = ? AND user_id = ?", (session_hash, self.id))
 
 	def get_libros_reservados(self):
+		from .Book import Book
 		res=db.select("""
 				SELECT Book.*
 				FROM Reserva
@@ -60,6 +61,7 @@ class User:
 		return books
 
 	def get_libros_leidos(self):
+		from .Book import Book
 		res = db.select("""
 				SELECT Book.*
 				FROM Reserva
