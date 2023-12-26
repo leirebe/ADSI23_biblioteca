@@ -110,6 +110,7 @@ def devolver_libro():
 def reserve_book():
 	user_id = request.user.id if 'user' in dir(request) and request.user else None
 	bookId = request.values.get("id", "")
+	print(f"bookId recibido para reservar: {bookId}")
 	reservation_time = get_current_time()
 	reserva = library.reserve_copy(user_id, bookId, reservation_time)
 	return render_template('reserva.html', user=user_id, bookId=bookId, time=reservation_time, reserva=reserva)
