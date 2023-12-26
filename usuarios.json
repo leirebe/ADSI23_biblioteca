@@ -8,11 +8,11 @@
       "rol": 0
     },
     {
-      "nombres": "Admin",
-      "email": "admin@gmail.com",
+      "nombres": "Jhon Doe",
+      "email": "jhon@gmail.com",
       "password": "123",
       "id": "IPB7fSC",
-      "rol": 1
+      "rol": 0
     },
     {
       "nombres": "Juan Ejemplo",
@@ -27,6 +27,13 @@
       "password": "123456",
       "id": "S_Faisg",
       "rol": 0
+    },
+    {
+      "nombres": "Admin",
+      "email": "admin@gmail.com",
+      "password": "admin",
+      "id": "A_Plplk",
+      "rol": 1
     }
   ]
 }

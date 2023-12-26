@@ -27,6 +27,14 @@ def add_cookies(response):
 		response.set_cookie('time', str(session.time))
 	return response
 
+def admin_required(func):
+    def wrapper(*args, **kwargs):
+        if 'user' in dir(request) and request.user and request.user.rol == 1:
+            return func(*args, **kwargs)
+        else:
+            return redirect('/')
+    return wrapper
+
 
 @app.route('/')
 def index():
@@ -157,15 +165,12 @@ def registro():
         password = request.form.get("password", "")
         confirm_password = request.form.get("confirm_password", "")
 
-        # Validar si las contraseñas coinciden
         if password != confirm_password:
             return render_template('registro.html', error="Las contraseñas no coinciden")
 
-        # Crear un nuevo usuario
         user = library.create_user(nombre, email, password)
 
         if user:
-            # Iniciar sesión automáticamente después del registro
             session = user.new_session()
             resp = redirect("/")
             resp.set_cookie('token', session.hash)
@@ -177,30 +182,44 @@ def registro():
         return render_template('registro.html')
 
 @app.route('/administrar_usuarios')
+@admin_required
 def administrar_usuarios():
     users = library.get_all_users()
     return render_template('administrar_usuarios.html', users=users)
 
-@app.route('/crear_usuario', methods=['POST'])
+@app.route('/crear_usuario', methods=['POST'], endpoint='crear_usuario_admin')
+@admin_required
 def crear_usuario():
-    # Obtener datos del formulario
     nombre = request.form.get("nombre", "")
     email = request.form.get("email", "")
     contrasena = request.form.get("contrasena", "")
 
-    # Lógica para crear el nuevo usuario en la base de datos
     library.create_user(nombre, email, contrasena)
 
-    # Redirigir a la página de administrar usuarios
     return redirect('/administrar_usuarios')
 
-@app.route('/eliminar_usuario/<int:user_id>', methods=['POST'])
+@app.route('/eliminar_usuario/<int:user_id>', methods=['POST'], endpoint='eliminar_usuario_admin')
+@admin_required
 def eliminar_usuario(user_id):
-    # Lógica para crear el nuevo usuario en la base de datos
     library.delete_user(user_id)
 
     return 'Usuario eliminado con éxito'
 
+@app.route('/anadir_libro', methods=['GET'], endpoint='anadir_libro_admin1')
+@admin_required
+def mostrar_formulario_anadir_libro():
+    return render_template('anadir_libro.html')
+
+@app.route('/anadir_libro', methods=['POST'], endpoint='crear_usuario_admin2')
+@admin_required
+def anadir_libro():
+    title = request.form.get('titulo')
+    id_author = request.form.get('id_author')
+    description = request.form.get('descripcion')
+
+    library.create_book(title, id_author, description)
+
+    return redirect('/')
 def get_current_time():
 	current_time = datetime.now()
 	return current_time.strftime("%Y-%m-%d %H:%M")

@@ -102,13 +102,12 @@ class LibraryController:
         # Verificar si el usuario ya existe con el mismo correo electrónico
         existing_user = db.select("SELECT * FROM User WHERE Email = ?", (email,))
         if existing_user:
-            return None  # El usuario ya existe
+            return None
 
-        # Crear un nuevo usuario con nombre de usuario, correo electrónico, contraseña y rol 0
         user_id = db.insert("INSERT INTO User(Nombre, Email, Password, Rol) VALUES (?, ?, ?, 0)",
                             (username, email, hash_password(password)))
         if user_id:
-            return User(user_id, username, 0, email)  # Devolver el nuevo usuario con rol 0
+            return User(user_id, username, 0, email)
         else:
             return None
 
@@ -160,7 +159,15 @@ class LibraryController:
         return users
 
     def delete_user(self, user_id):
-        # Lógica para eliminar el usuario con el ID proporcionado
-        # Devuelve True si la eliminación fue exitosa, False en caso contrario
         result = db.delete("DELETE FROM User WHERE id = ?", (user_id,))
         return result > 0
+
+    def create_book(self, title, author_id, description):
+        book_id = db.insert("INSERT INTO Book(title, author, description, cover) VALUES (?, ?, ?, '')",
+                            (title, author_id, description))
+
+        if book_id:
+            return Book(book_id, title, author_id, '', description)
+        else:
+            print('error')
+            return None
