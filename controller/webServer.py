@@ -118,9 +118,12 @@ def devolver_libro():
 def reserve_book():
 	user_id = request.user.id if 'user' in dir(request) and request.user else None
 	bookId = request.values.get("id", "")
+	book = library.getBook(bookId)
+	print(f"bookId recibido para reservar: {bookId}")
+	print(f"persona que realiza la reserva: {user_id}")
 	reservation_time = get_current_time()
 	reserva = library.reserve_copy(user_id, bookId, reservation_time)
-	return render_template('reserva.html', user=user_id, bookId=bookId, time=reservation_time, reserva=reserva)
+	return render_template('reserva.html', user=user_id, bookId=bookId,book=book, time=reservation_time, reserva=reserva)
 
 
 @app.route('/login', methods=['GET', 'POST'])

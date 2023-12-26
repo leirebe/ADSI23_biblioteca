@@ -113,7 +113,7 @@ class LibraryController:
 
     def create_reservation(self, user_id, copy_id, reserve_time):
         db.insert(
-            "INSERT INTO Reserva(usuarioIdU, copiaLibroIdCopia, FechaHoraInicio, FechaEntrega) VALUES (?, ?, ?, NULL)",
+            "INSERT INTO Reserva(usuarioIdU, IdCopiaLibro, FechaHoraInicio, FechaEntrega) VALUES (?, ?, ?, NULL)",
             (user_id, copy_id, reserve_time)
         )
         reserva = db.select("SELECT * FROM RESERVA WHERE UsuarioIdU= ? AND IdCopiaLibro=? AND FechaHoraInicio=? AND FechaEntrega is NULL", (user_id, copy_id, reserve_time))[0]
