@@ -174,13 +174,9 @@ def registro():
         user = library.create_user(nombre, email, password)
 
         if user:
-            session = user.new_session()
             resp = redirect("/")
-            resp.set_cookie('token', session.hash)
-            resp.set_cookie('time', str(session.time))
             return resp
-        else:
-            return render_template('registro.html', error="Error en el registro. Intenta nuevamente.")
+
     else:
         return render_template('registro.html')
 
