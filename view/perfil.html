@@ -11,8 +11,13 @@
     <ul>
         {% if libros_en_reserva %}
             {% for libro in libros_en_reserva %}
-                <li>{{ libro.titulo }} - {{ libro.autor }}</li>
-                 <button><a href="/devolverUnLibro?reservaId={{ libro.id }})">Devolver Libro</a></button>
+
+                <hr>
+                <div>
+                    <li>{{ libro.title }} - {{ libro.author }}</li>
+                    <button><a href="/devolverUnLibro?reservaId={{ libro.id }})">Devolver Libro</a></button>
+                </div>
+
             {% endfor %}
         {% else %}
             <p>No hay Libros en Reserva.</p>
@@ -27,8 +32,13 @@
      <ul>
         {% if historial_lectura %}
             {% for libro in historial_lectura %}
-                <li>{{ libro.titulo }} - {{ libro.autor }}</li>
-                <button><a href="/resenna/{{ libro.id }}">Reseñar</a></button>
+
+                <hr>
+                <div>
+                    <li>{{ libro.titulo }} - {{ libro.autor }}</li>
+                    <button><a href="/resenna/{{ libro.id }}">Reseñar</a></button>
+                </div>
+
             {% endfor %}
         {% else %}
             <p>No hay Libros en Historial de Lectura.</p>

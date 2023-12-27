@@ -121,9 +121,12 @@ class LibraryController:
         return Reserva(reserva[0], reserva[1], reserva[2], reserva[3], reserva[4])
 
     def get_reserva(self, libroId, userId):
-        reserve = db.select("SELECT * FROM Reserva WHERE idLibro = ? AND usuarioIdU = ? AND FechaEntrega IS NULL", (libroId, userId))
+        reserve = db.select("SELECT * FROM Reserva WHERE IdCopiaLibro = ? AND usuarioIdU = ?",
+                            (libroId, userId)
+                            )
         if reserve:
-            return Reserva(reserve[0][0], reserve[0][1], reserve[0][2], reserve[0][3], reserve[0][4])
+            reservation = Reserva(reserve[0][0], reserve[0][1], reserve[0][2],reserve[0][3], reserve[0][4])
+            return reservation
         else:
             return None
 
