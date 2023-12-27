@@ -14,8 +14,8 @@
 
                 <hr>
                 <div>
-                    <li>{{ libro.title }} - {{ libro.author }}</li>
-                    <button><a href="/devolverUnLibro?reservaId={{ libro.id }})">Devolver Libro</a></button>
+                    <li> {{ libro.title }} - {{ libro.author }} </li>
+                    <button><a href="/devolverUnLibro?id={{libro.idLibro}}">Devolver Libro</a></button>
                 </div>
 
             {% endfor %}
