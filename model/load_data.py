@@ -3,6 +3,7 @@ import random
 import sqlite3
 import json
 import os
+from datetime import datetime
 
 db_path = os.path.join(os.path.dirname(__file__), '..', 'datos.db')
 if os.path.exists(db_path):
@@ -132,6 +133,8 @@ cur.execute("""
 	)
 """)
 
+con.commit()
+
 ### Insert users
 users_path = os.path.join(os.path.dirname(__file__), '..', 'usuarios.json')
 
@@ -151,6 +154,7 @@ books_path = os.path.join(os.path.dirname(__file__), '..', 'libros.tsv')
 with open(books_path, 'r', encoding='utf-8') as f:
 	libros = [x.split("\t") for x in f.readlines()]
 
+book_count = 0
 for author, title, cover, description in libros:
 	res = cur.execute(f"SELECT id FROM Author WHERE name=\"{author}\"")
 	if res.rowcount == -1:
@@ -170,6 +174,9 @@ for author, title, cover, description in libros:
 		cur.execute("INSERT INTO CopiaLibro (LibroIdLibro) VALUES (?)", (libro_id,))
 
 	con.commit()
+	if book_count >= 100:
+		break
+	book_count += 1
 
 
 # Reseñas
@@ -181,4 +188,11 @@ cur.execute("INSERT INTO Resenna VALUES (NULL, ?, ?, ?, ?)",
 		            (3, 1, "No me ha gustado.", 1))
 cur.execute("INSERT INTO Resenna VALUES (NULL, ?, ?, ?, ?)",
 		            (2, 1, "Recomendable.", 4))
+con.commit()
+
+# Reservas
+cur.execute("INSERT INTO Reserva VALUES (NULL, ?, ?, ?, ?)",
+		            (1, 2, datetime.now(), None))
+cur.execute("INSERT INTO Reserva VALUES (NULL, ?, ?, ?, ?)",
+		            (1, 3, datetime.now(), None))
 con.commit()
