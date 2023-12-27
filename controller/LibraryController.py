@@ -139,7 +139,6 @@ class LibraryController:
         else: #Insertar una nueva
             db.insert("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, puntuacion) VALUES (?, ?, ?, ?)",
                       (user_id, book_id, comentario, puntuacion))
-
     def generarListaRecomendaciones(self, user):
         # precondicion: usuario con historial de reservas
         # 1) acceder a su historial de reservas (id de libros)

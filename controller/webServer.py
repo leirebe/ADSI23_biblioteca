@@ -1,5 +1,5 @@
 from .LibraryController import LibraryController
-from flask import Flask, render_template, request, make_response, redirect
+from flask import Flask, render_template, request, make_response, redirect, jsonify
 from datetime import datetime
 
 app = Flask(__name__, static_url_path='', static_folder='../view/static', template_folder='../view/')
@@ -56,25 +56,6 @@ def catalogue():
 	return render_template('catalogue.html', books=books, title=title, author=author, current_page=page,
 	                       total_pages=total_pages, max=max, min=min)
 
-@app.route('/resenna')
-def resenna():
-
-	return render_template('resenna.html')
-
-""""@app.route('/resenna', methods=['POST'])
-def insert_or_update_review():
-	if 'user' in dir(request) and request.user and request.user.token:
-		user_id = request.user.id
-		book_id = request.form.get("book_id", "")
-		comment = request.form.get("comment", "")
-		rating = request.form.get("rating", "")
-
-		library.insert_review(user_id, book_id, comment, rating)
-		return redirect('/perfil')  # Redirecciona a la página de perfil después de dejar la reseña
-	else:
-		return redirect('/login')  # Si el usuario no está autenticado, redirige al inicio de sesión"""
-
-
 @app.route('/book')
 def book():
 	bookId = request.values.get("id", "")
@@ -113,6 +94,20 @@ def devolver_libro():
 		return redirect("/perfil")
 	else:
 		return redirect('/')
+
+@app.route('/resennar', methods=['POST'])
+def resennar():
+	if 'user' in dir(request) and request.user:
+		user_id = request.user.id
+		book_id = request.form.get("book_id")
+		comentario = request.form.get("comentario")
+		puntuacion = request.form.get("puntuacion")
+
+		library.insert_review(user_id, book_id, comentario, puntuacion)
+
+		return redirect('/perfil')
+	else:
+		return redirect('/login')
 
 @app.route('/reserve', methods=['GET', 'POST'])
 def reserve_book(ultima_reserva_tiempo=None):
