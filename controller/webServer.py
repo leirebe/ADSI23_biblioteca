@@ -161,7 +161,7 @@ def login():
 @app.route('/logout')
 def logout():
 	path = request.values.get("path", "/")
-	resp = redirect(path)
+	resp = redirect("/")
 	resp.delete_cookie('token')
 	resp.delete_cookie('time')
 	if 'user' in dir(request) and request.user and request.user.token:
@@ -186,9 +186,13 @@ def registro():
         user = library.create_user(nombre, email, password)
 
         if user:
+            session = user.new_session()
             resp = redirect("/")
+            resp.set_cookie('token', session.hash)
+            resp.set_cookie('time', str(session.time))
             return resp
-
+        else:
+            return render_template('registro.html', error="Error en el registro. Intenta nuevamente.")
     else:
         return render_template('registro.html')
 
