@@ -130,25 +130,16 @@ class LibraryController:
         else:
             return None
 
-   # def insert_review(self, user_id, book_id, comentario, puntuacion):
-       # existing_review = db.select("SELECT * FROM Resenna WHERE UsuarioIdU = ? AND LibroIdLibro = ?",
-        #                            (user_id, book_id))
-        # if existing_review: #Actualizar la existente
-         #   db.update("UPDATE Resenna SET Comentario = ?, puntuacion = ? WHERE UsuarioIdU = ? AND LibroIdLibro = ?",
-         #             (comentario, puntuacion, user_id, book_id))
-        #else: #Insertar una nueva
-         #   db.insert("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, puntuacion) VALUES (?, ?, ?, ?)",
-          #            (user_id, book_id, comentario, puntuacion))
-
-    def insert_review(self, user_id, book_id, comentario, puntuacion):
+    def insert_review(self, user_id, book_id, comentario, nueva_puntuacion):
         existing_review = db.select("SELECT * FROM Resenna WHERE UsuarioIdU = ? AND LibroIdLibro = ?",
                                     (user_id, book_id))
+
         if existing_review:  # Actualizar la existente
             db.update("UPDATE Resenna SET Comentario = ?, puntuacion = ? WHERE UsuarioIdU = ? AND LibroIdLibro = ?",
-                      (comentario, puntuacion, user_id, book_id))
+                      (comentario, nueva_puntuacion, user_id, book_id))
         else:  # Insertar una nueva
             db.insert("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, puntuacion) VALUES (?, ?, ?, ?)",
-                      (user_id, book_id, comentario, puntuacion))
+                      (user_id, book_id, comentario, nueva_puntuacion))
 
     def get_book_id_from_reservation(self, reservation_id):
         # Obtener el ID de la copia de libro asociada a la reserva
