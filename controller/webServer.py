@@ -98,14 +98,18 @@ def devolver_libro():
 @app.route('/resennar', methods=['POST'])
 def resennar():
 	if 'user' in dir(request) and request.user:
-		user_id = request.user.id
-		book_id = request.form.get("book_id")
+		user_id = request.user.id if 'user' in dir(request) and request.user else None
+		book_id = request.values.get("id", "")
 		comentario = request.form.get("comentario")
 		puntuacion = request.form.get("puntuacion")
 
-		library.insert_review(user_id, book_id, comentario, puntuacion)
+		libro_id = book_id
 
-		return redirect('/perfil')
+		if user_id and libro_id:  # Verificar que haya un usuario y un ID de libro válido
+			library.insert_review(user_id, libro_id, comentario, puntuacion)
+			return redirect('/perfil')
+		else:
+			return redirect('/login')
 	else:
 		return redirect('/login')
 
