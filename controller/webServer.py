@@ -103,7 +103,7 @@ def resennar():
 		comentario = request.form.get("comentario")
 		puntuacion = request.form.get("puntuacion")
 
-		libro_id = book_id
+		libro_id = library.get_book_id_from_reservation(book_id)
 
 		if user_id and libro_id:  # Verificar que haya un usuario y un ID de libro válido
 			library.insert_review(user_id, libro_id, comentario, puntuacion)

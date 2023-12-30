@@ -196,3 +196,8 @@ cur.execute("INSERT INTO Reserva VALUES (NULL, ?, ?, ?, ?)",
 cur.execute("INSERT INTO Reserva VALUES (NULL, ?, ?, ?, ?)",
 		            (1, 3, datetime.now(), None))
 con.commit()
+
+# Historial de Lectura
+cur.execute("INSERT INTO Reserva VALUES (NULL, ?, ?, ?, ?)",
+		            (1, 7, datetime.now(), "2023-12-31 21:09:07.939378"))
+con.commit()

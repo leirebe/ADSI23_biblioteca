@@ -141,12 +141,8 @@ class LibraryController:
             db.insert("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, puntuacion) VALUES (?, ?, ?, ?)",
                       (user_id, book_id, comentario, nueva_puntuacion))
 
-    def get_book_id_from_reservation(self, reservation_id):
-        # Obtener el ID de la copia de libro asociada a la reserva
-        copy_id = db.select("SELECT IdCopiaLibro FROM Reserva WHERE IdReserva = ?", (reservation_id,))
+    def get_book_id_from_reservation(self, copy_id):
         if copy_id:
-            copy_id = copy_id[0][0]
-            # Obtener el ID del libro usando el ID de la copia de libro
             book_id = db.select("SELECT LibroidLibro FROM CopiaLibro WHERE IdCopia = ?", (copy_id,))
             if book_id:
                 return book_id[0][0]

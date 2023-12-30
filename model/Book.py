@@ -37,7 +37,7 @@ class Book:
 
     def getResennas(self):
         em = db.select("SELECT * FROM Resenna WHERE libroIdLibro=?",(self.idLibro,))
-        return [Resenna(r[0],self,r[2],r[3]) for r in em]
+        return [Resenna(r[0],r[1],self,r[3],r[4]) for r in em]
 
     def insertar_resena(usuario_id, libro_id, comentario, puntuacion):
         db.insert("INSERT INTO Resenna (UsuarioIdU, LibroIdLibro, Comentario, puntuacion, FechaHora) VALUES (?, ?, ?, ?, ?)",
