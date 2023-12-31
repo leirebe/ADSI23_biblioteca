@@ -188,6 +188,8 @@ cur.execute("INSERT INTO Resenna VALUES (NULL, ?, ?, ?, ?)",
 		            (3, 1, "No me ha gustado.", 1))
 cur.execute("INSERT INTO Resenna VALUES (NULL, ?, ?, ?, ?)",
 		            (2, 1, "Recomendable.", 4))
+cur.execute("INSERT INTO Resenna VALUES (NULL, ?, ?, ?, ?)",
+		            (1, 1, "Guay.", 3))
 con.commit()
 
 # Reservas
@@ -199,5 +201,7 @@ con.commit()
 
 # Historial de Lectura
 cur.execute("INSERT INTO Reserva VALUES (NULL, ?, ?, ?, ?)",
-		            (1, 7, datetime.now(), "2023-12-31 21:09:07.939378"))
+		            (1, 1, datetime.now(), "2023-12-31 21:09:07.939378"))
+cur.execute("INSERT INTO Reserva VALUES (NULL, ?, ?, ?, ?)",
+		            (1, 6, datetime.now(), "2023-12-31 21:09:07.939378"))
 con.commit()
