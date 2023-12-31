@@ -13,7 +13,7 @@ class test_devolverLibro(BaseTestClass):
         user_id = self.db.select("SELECT id from User where Email = ?", ('james@gmail.com',))[0][0]
 
         # Obtener el ID de un libro de las reservas del usuario
-        libro_esperado_id = 2
+        libro_esperado_id = 3
 
         # Verificar la presencia del libro en la lista de reservas del usuario
         libro_en_reservas = self.db.select("""
@@ -64,7 +64,7 @@ class test_devolverLibro(BaseTestClass):
         self.login('james@gmail.com', '123456')
 
         # Verificar si el libro con ID 2 está en la lista de reservas del usuario
-        libro_esperado_id = 2
+        libro_esperado_id = 3
         libro_en_reservas = self.user_has_book_in_reservations(libro_esperado_id)
         self.assertTrue(libro_en_reservas, f"El libro con ID {libro_esperado_id} está en las reservas del usuario")
 

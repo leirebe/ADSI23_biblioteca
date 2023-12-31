@@ -36,6 +36,7 @@ class test_HistorialReservas(BaseTestClass):
 
 
 
+
     # Comprobar que un libro NO devuelto (pero SI reservado) NO se encuentra en el Historial de Lectura
     def test_libro_no_en_historial_lectura_sin_devolucion(self):
         # Hacer login del usuario
@@ -65,8 +66,10 @@ class test_HistorialReservas(BaseTestClass):
         # Logout después de la prueba
         self.client.get('/logout')
 
-    # Comprobar que un libro NO reservado NO se encuentra en el Historial de Lectura
 
+
+
+    # Comprobar que un libro NO reservado NO se encuentra en el Historial de Lectura
     def test_libro_no_en_historial_lectura_sin_reserva(self):
         # Hacer login del usuario
         self.login('james@gmail.com', '123456')
