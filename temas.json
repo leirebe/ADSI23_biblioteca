@@ -1,0 +1,14 @@
+{
+  "temas": [
+    {
+      "autor": "3",
+      "nombre": "Libros terror Halloween",
+      "descripcion": "Me podrían recomendar libros de terror y suspense aprovechando que se viene Halloween?"
+    },
+    {
+      "autor": "2",
+      "nombre": "Libros de misterio principiante",
+      "descripcion": "Busco recomendación sobre libros de misterio para empezar con el género. Muchas gracias!"
+    }
+  ]
+}
