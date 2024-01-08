@@ -45,7 +45,11 @@ cur.execute("""
 
 cur.execute("""
 	CREATE TABLE Tema(
-		IdTema integer primary key AUTOINCREMENT
+		IdTema integer primary key AUTOINCREMENT,
+  		TemaNombre integer(10),
+        TemaDescr varchar(255),
+        TemaAutor integer(10)
+   
 	)
 """)
 
@@ -204,4 +208,25 @@ cur.execute("INSERT INTO Reserva VALUES (NULL, ?, ?, ?, ?)",
 		            (1, 1, datetime.now(), "2023-12-31 21:09:07.939378"))
 cur.execute("INSERT INTO Reserva VALUES (NULL, ?, ?, ?, ?)",
 		            (1, 6, datetime.now(), "2023-12-31 21:09:07.939378"))
+con.commit()
+
+# Insertar Foros predeterminados
+temas_path = os.path.join(os.path.dirname(__file__), '..', 'temas.json')	
+print(temas_path)
+
+with open(temas_path, 'r', encoding='utf-8') as f:
+    temas_data = json.load(f)['temas']
+
+
+for tema in temas_data:
+    autor = tema['autor']
+    nombre = tema['nombre']
+    descripcion = tema['descripcion']
+    
+    cur.execute("INSERT INTO Tema DEFAULT VALUES")
+    tema_id = cur.lastrowid  # Obtener el ID del tema recién insertado
+    
+    cur.execute("UPDATE Tema SET TemaNombre = ?, TemaDescr = ?, TemaAutor = ? WHERE IdTema = ?", (nombre, descripcion, autor, tema_id))
+    #cur.execute("INSERT INTO Mensaje (UsuarioIdU, TemaIdTema, Mensaje, FechaHora) VALUES (?, ?, ?, ?)",(autor, tema_id, texto, datetime.now()))
+	
 con.commit()
