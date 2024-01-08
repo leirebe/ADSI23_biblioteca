@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container p-5 my-5 border">
+    <div class="row">
+        <div class="col-md-9">
+            <!-- Listado de foros -->
+            <h3>Listado de temas del Foro</h3>
+            <form id="selectTopicForm">
+                
+                <select id="selectTopic" class="form-control">
+                    {% for tema in temas_foro %}
+                        <option value="{{ tema[0] }}">{{ tema[1] }}</option>
+                    {% endfor %}
+                </select>
+                              
+            </form>
+            {% if request.user %}
+            <button id="verTemaBtn" class="btn btn-primary d-none">Ver Tema</button>
+            {% endif %} 
+        </div>
+        <div class="col-md-3 text-right">
+            {% if request.user %}
+                <a href="/crear-tema" class="btn btn-primary">Crear Tema</a>
+            {% else %}
+                <p>Bienvenido a nuestro foro. Por favor, inicia sesión para poder crear temas y añadir comentarios.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('selectTopic').addEventListener('change', function() {
+        var verTemaBtn = document.getElementById('verTemaBtn');
+        verTemaBtn.classList.remove('d-none');
+    });
+
+    document.getElementById('verTemaBtn').addEventListener('click', function() {
+        // Redirigir a la página del tema seleccionado
+        var selectedTopic = document.getElementById('selectTopic').value;
+        window.location.href = `/ver-tema-${selectedTopic}`;
+    });
+</script>
+{% endblock %}

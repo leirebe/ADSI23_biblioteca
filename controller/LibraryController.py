@@ -1,7 +1,9 @@
 import datetime
+from datetime import datetime
 
 from model import Connection, Book, User, Reserva, BookCopy
 from model.tools import hash_password
+from model.Forum import Tema, Mensaje
 
 db = Connection()
 
@@ -182,3 +184,42 @@ class LibraryController:
         else:
             print('error')
             return None
+    
+    def get_forum_topics(self):
+        tema_foros = db.select("SELECT * FROM Tema")
+        return tema_foros
+    
+    def get_topic_id(self, tema_id):
+        tema= db.select("SELECT * FROM Tema WHERE IdTema = ?", (tema_id,))
+        if tema:
+            return tema[0]
+        else:
+            return None
+    
+    def create_tema(self, autor, nombre, descripcion):
+        tema_id = db.insert("INSERT INTO Tema(TemaNombre, TemaDescr, TemaAutor) VALUES (?, ?, ?)",
+                            (nombre, descripcion, autor))
+
+        if tema_id:
+            tema = Tema(tema_id, autor, nombre, descripcion)
+            return tema
+        else:
+            print('Hubo un error al crear el tema.')
+            return None
+
+    def create_mensaje(self, idTopic, userId, receptor, texto):
+        fechaHora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        mensaje_id = db.insert("INSERT INTO Mensaje(UsuarioIdU, TemaIdTema, receptor, Mensaje, FechaHora) VALUES (?, ?, ?, ?, ?)",
+                            (userId, idTopic, receptor, texto, fechaHora))
+        
+        if mensaje_id:
+            mensaje = Mensaje(mensaje_id, userId, idTopic, receptor, texto, fechaHora)
+            return mensaje
+        else:
+            print('Hubo un error al crear el mensaje.')
+            return None
+        
+    def get_comments_for_topic(self, topic_id):
+        comments = db.select("SELECT * FROM Mensaje WHERE TemaIdTema = ?", (topic_id,))
+        return comments

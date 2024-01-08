@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container p-5 my-5 border">
+    <p> <button><a href="/forum"> Volver al foro </a></button> </p>
+    <h1>Crear nuevo tema</h1>
+    <p>Autor: {{ user }}</p>
+    <form id="crearTemaForm" action="/crear-tema" method="post">
+        <div class="form-group">
+            <label for="nombreTema">Nombre:</label>
+            <input type="text" class="form-control" id="nombreTema" name="nombreTema" required>
+        </div>
+        <div class="form-group">
+            <label for="descripcionTema">Descripción:</label>
+            <textarea class="form-control" id="descripcionTema" name="descripcionTema" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Crear Tema</button>
+    </form>
+</div>
+
+
+{% endblock %}
