@@ -236,3 +236,69 @@ def anadir_libro():
 def get_current_time():
 	current_time = datetime.now()
 	return current_time.strftime("%Y-%m-%d %H:%M")
+
+@app.route('/forum')
+def foros():
+    temas_foro = library.get_forum_topics()
+    print(temas_foro)
+    return render_template('forum.html', temas_foro=temas_foro)
+
+@app.route('/crear-tema',  methods=['GET', 'POST'])
+def crear_tema():
+    userId = request.values.get("id", -1)
+    user_info = str(request.user)
+    nombre = user_info.split(' (')[0]
+    
+    if request.method == 'POST':
+        
+        nombre_tema = request.form['nombreTema']
+        descripcion_tema = request.form['descripcionTema']
+        userId = request.user.id
+        
+        tema = library.create_tema(userId, nombre_tema, descripcion_tema)
+		
+        return redirect('/forum')
+    
+    return render_template('crear_tema.html', user=nombre)
+
+@app.route('/ver-tema-<int:topic_id>', methods=['GET', 'POST'])
+def ver_tema(topic_id):
+    if request.method == 'POST':
+        userId = request.user.id
+        is_response = request.form.get('isResponse')
+        
+        if is_response == 'True':
+            parent_comment_id = request.form.get('parentCommentId')
+            response_text = request.form.get('responseText')
+            
+            if response_text:
+                library.create_mensaje(topic_id, userId, parent_comment_id, response_text)
+        else:
+            comment_text = request.form.get('commentText')
+            
+            if comment_text:
+                library.create_mensaje(topic_id, userId, None, comment_text)
+        
+    comments = library.get_comments_for_topic(topic_id) 
+    tema_data = library.get_topic_id(topic_id)
+    user = library.get_user_id(tema_data[3])
+    autor_nombre = str(user).split(' (')[0]
+    
+    main_comments=[]
+    responses = []
+    
+    for comment in comments:
+        if comment[3] == None:  
+            
+            main_comments.append(comment)
+        else:
+            
+            responses.append(comment)
+
+    return render_template('ver-tema.html', topic=tema_data, autor=autor_nombre, comments=comments, main_comments=main_comments, responses=responses)
+
+
+
+
+
+
