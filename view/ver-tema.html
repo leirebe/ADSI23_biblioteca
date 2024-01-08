@@ -1,0 +1,48 @@
+        {% extends 'base.html' %}
+
+        {% block content %}
+        <div class="container p-5 my-5 border">
+            <h1>{{ topic[1] }}</h1>
+            <p style="font-size: larger;">{{ topic[2] }}</p>
+            <p>Autor: {{ autor }}</p>
+            
+            <!-- Sección de comentarios -->
+            <h2>Comentarios</h2>
+            <!-- Formulario para añadir comentarios -->
+    <form id="commentForm" action="/ver-tema-{{ topic[0] }}" method="post">
+        <div class="form-group">
+            <textarea class="form-control" id="commentText" name="commentText" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar Comentario</button>
+    </form>
+
+    <!-- Comentarios y respuestas -->
+<div id="comments">
+    {% for comment in main_comments %}
+        <div class="comment">
+            <p>{{ "·"+comment[4] }}</p>
+            <!-- Respuestas a este comentario -->
+            <div class="responses">
+                {% for response in responses %}
+                    {% if response[3] == comment[0] %}
+                        <div class="response "> 
+                            <p>{{ "----------->"+ response[4] }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <!-- Formulario para responder a un comentario -->
+            <form class="responseForm" action="/ver-tema-{{ topic[0] }}" method="post">
+                <input type="hidden" name="parentCommentId" value="{{ comment[0] }}">
+                <input type="hidden" name="isResponse" value="True">
+                <div class="form-group">
+                    <textarea class="form-control" id="responseText{{ comment.id }}" name="responseText" rows="2" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Responder</button>
+            </form>
+        </div>
+    {% endfor %}
+</div>
+
+        </div>
+        {% endblock %}
