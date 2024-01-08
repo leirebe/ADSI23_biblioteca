@@ -7,13 +7,17 @@
             <!-- Listado de foros -->
             <h3>Listado de temas del Foro</h3>
             <form id="selectTopicForm">
+                
                 <select id="selectTopic" class="form-control">
                     {% for tema in temas_foro %}
                         <option value="{{ tema[0] }}">{{ tema[1] }}</option>
                     {% endfor %}
-                </select>               
+                </select>
+                              
             </form>
+            {% if request.user %}
             <button id="verTemaBtn" class="btn btn-primary d-none">Ver Tema</button>
+            {% endif %} 
         </div>
         <div class="col-md-3 text-right">
             {% if request.user %}
